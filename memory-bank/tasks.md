@@ -15,12 +15,12 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 - [x] Agent fetches ~10 startup ideas from LLM based on topic.
 - [x] User selects one idea via CLI.
 - [x] Agent collects basic design preferences via CLI.
-- [x] Agent generates a site schema (JSON) using LLM based on idea and preferences.
-- [x] User approves or requests regeneration of the schema via CLI.
-- [x] Agent generates `index.html` and `style.css` content using EJS templates and the approved schema.
-- [x] Generated content includes a functional Netlify form (`data-netlify="true"`).
-- [x] Agent saves generated files to a local directory named after the site/brand.
-- [x] Agent clones a specified Git repository, copies the generated site files into it (under a subdirectory named after the site/brand), commits, and pushes.
+- [ ] Agent generates a site schema (JSON) using LLM based on idea and preferences.
+- [ ] User approves or requests regeneration of the schema via CLI.
+- [ ] Agent generates `index.html` and `style.css` content using EJS templates and the approved schema.
+- [ ] Generated content includes a functional Netlify form (`data-netlify="true"`).
+- [ ] Agent saves generated files to a local directory named after the site/brand.
+- [ ] Agent clones a specified Git repository, copies the generated site files into it (under a subdirectory named after the site/brand), commits, and pushes.
 
 **Technical Constraints:**
 - [x] Must use Node.js with ES Modules.
@@ -184,16 +184,16 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Use the LLM Service and CLI to generate and select startup ideas.
 **Dependencies:** Subtask 3, Subtask 4
 **Steps:**
-- [ ] Modify `src/index.ts` (Orchestrator).
-- [ ] Import `getTopic`, `selectIdea` from `cli.ts`.
-- [ ] Import `callLLM` from `llmService.ts`.
-- [ ] In the main execution flow:
-    - [ ] Call `getTopic()` to get the user's topic.
-    - [ ] Construct a prompt for the LLM asking for 10 startup ideas based on the topic.
-    - [ ] Call `callLLM(prompt)` to get the ideas string.
-    - [ ] Parse the ideas string into an array of strings. Handle potential LLM formatting inconsistencies.
-    - [ ] Call `selectIdea(ideasArray)` to let the user choose one.
-    - [ ] Store the selected idea.
+- [x] Modify `src/index.ts` (Orchestrator).
+- [x] Import `getTopic`, `selectIdea` from `cli.ts`.
+- [x] Import `callLLM` from `llmService.ts`.
+- [x] In the main execution flow:
+    - [x] Call `getTopic()` to get the user's topic.
+    - [x] Construct a prompt for the LLM asking for 10 startup ideas based on the topic.
+    - [x] Call `callLLM(prompt)` to get the ideas string.
+    - [x] Parse the ideas string into an array of strings. Handle potential LLM formatting inconsistencies.
+    - [x] Call `selectIdea(ideasArray)` to let the user choose one.
+    - [x] Store the selected idea.
 
 ### Subtask 6: Schema Generation Integration
 **Goal:** Use the LLM Service and CLI to generate and approve the site schema.

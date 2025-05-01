@@ -34,6 +34,7 @@ A CLI tool that automates the creation of landing pages for product/startup idea
    ```
    OPENROUTER_API_KEY=your_openrouter_api_key_here
    NETLIFY_GIT_REPO_URL=your_netlify_watched_git_repo_url_here
+   DEFAULT_LLM_MODEL=google/gemini-2.5-pro-preview-03-25
    ```
 
 ## Usage
