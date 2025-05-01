@@ -1,7 +1,7 @@
 # Active Context - Idea Factory Automator
 
 ## Current Phase
-Implementation - Subtask 6 completed, ready for Subtask 7.
+Implementation - Subtask 7 completed, ready for Subtask 8.
 
 ## Project Overview
 The Idea Factory Automator is a CLI-based tool that helps users:
@@ -67,7 +67,9 @@ For v0, we're focusing on the automated site creation workflow.
   - siteGenerator.ts: Placeholder EJS rendering implementation
   - fileManager.ts: Placeholder file operations
   - deploymentManager.ts: Placeholder Git operations
-  - templates: Basic responsive HTML/CSS templates created
+  - templates: 
+    - index.ejs: Responsive HTML template with Netlify form implementation
+    - style.ejs: CSS template with dynamic styling variables
   - Environment Variables: Structure defined with placeholders
 
 ## Completed Tasks
@@ -77,11 +79,13 @@ For v0, we're focusing on the automated site creation workflow.
 - ✅ Subtask 4: Basic CLI Interface Setup
 - ✅ Subtask 5: Idea Generation Integration
 - ✅ Subtask 6: Schema Generation Integration
+- ✅ Subtask 7: HTML/CSS Template Creation
 
 ## Next Steps
-- Implement Subtask 7: HTML/CSS Template Creation
-  - Create responsive HTML template with proper Netlify form integration
-  - Develop matching CSS with dynamic styling based on schema
-  - Set up EJS placeholders for dynamic content
-  - Ensure form includes necessary Netlify attributes
-- Prepare for Subtask 8: Site Generator Implementation
+- Implement Subtask 8: Site Generator Implementation
+  - Create generateSiteFiles function in siteGenerator.ts
+  - Use EJS to render templates with schema data
+  - Integrate with llmService for optional content refinement
+  - Handle template rendering errors
+  - Return generated HTML and CSS content
+- Prepare for Subtask 9: File System Manager Implementation

@@ -215,22 +215,22 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Create the static EJS template files with placeholders.
 **Dependencies:** Subtask 1 (files created)
 **Steps:**
-- [ ] Open `src/templates/index.ejs`.
-- [ ] Write basic HTML structure for a landing page. Include:
-    - [ ] Placeholders for content: `<%= copyBlocks.headline %>`, `<%= copyBlocks.subheadline %>`, etc.
-    - [ ] Placeholders for styling variables (can be used in `<style>` tags or linked CSS): `<%= palette.primary %>`, `<%= font.heading %>`.
-    - [ ] A basic HTML form with necessary fields (e.g., email).
-    - [ ] **Crucially:** Add the `data-netlify="true"` attribute to the `<form>` tag. Add a hidden input for form name if needed: `<input type="hidden" name="form-name" value="contact">`.
-    - [ ] Placeholder for the submit button text: `<%= formText.submitButton %>`.
-- [ ] Open `src/templates/style.ejs` (or `.css` if not using EJS for CSS).
-- [ ] Write basic CSS rules.
-- [ ] Use EJS placeholders for dynamic values like colors and fonts:
+- [x] Open `src/templates/index.ejs`.
+- [x] Write basic HTML structure for a landing page. Include:
+    - [x] Placeholders for content: `<%= copyBlocks.headline %>`, `<%= copyBlocks.subheadline %>`, etc.
+    - [x] Placeholders for styling variables (can be used in `<style>` tags or linked CSS): `<%= palette.primary %>`, `<%= font.heading %>`.
+    - [x] A basic HTML form with necessary fields (e.g., email).
+    - [x] **Crucially:** Add the `data-netlify="true"` attribute to the `<form>` tag. Add a hidden input for form name if needed: `<input type="hidden" name="form-name" value="contact">`.
+    - [x] Placeholder for the submit button text: `<%= formText.submitButton %>`.
+- [x] Open `src/templates/style.ejs` (or `.css` if not using EJS for CSS).
+- [x] Write basic CSS rules.
+- [x] Use EJS placeholders for dynamic values like colors and fonts:
     ```css
     body { font-family: '<%= font.body %>'; }
     h1 { font-family: '<%= font.heading %>'; color: <%= palette.primary %>; }
     .button { background-color: <%= palette.accent %>; }
     ```
-- [ ] Link the stylesheet in `index.ejs` if using a separate CSS file.
+- [x] Link the stylesheet in `index.ejs` if using a separate CSS file.
 
 ### Subtask 8: Site Generator Implementation
 **Goal:** Implement the logic to populate templates with schema data and LLM-generated content.
@@ -240,7 +240,7 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 - [ ] Import `ejs` and Node's `fs/promises`.
 - [ ] Import `callLLM` from `llmService.ts` (optional: if refining copy).
 - [ ] Define an async function `generateSiteFiles(schema)`:
-    - [ ] **(Optional)** If desired, construct prompts for `callLLM` to refine/expand `schema.copyBlocks` or generate image alt text based on `schema.imagePrompts`. Update the schema object with refined content. **(Creative Phase: Content Refinement Logic - Optional)**
+    - [ ] See [creative-content-refinement-prompt](./creative-content-refinement-prompt.md) for chosen prompt - use this prompt with `callLLM` to refine/expand `schema.copyBlocks` or generate image alt text based on `schema.imagePrompts`. Update the schema object with refined content. **(Creative Phase: Content Refinement Logic)**
     - [ ] Define paths to the template files (`src/templates/index.ejs`, `src/templates/style.ejs`).
     - [ ] Use `ejs.renderFile(templatePath, schema)` for both index and style templates, passing the `schema` object as data. This will replace the `<%= ... %>` placeholders.
     - [ ] Handle potential rendering errors.
