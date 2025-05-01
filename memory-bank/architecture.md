@@ -31,7 +31,8 @@ idea-factory-automator/
 │   ├── index.ts        # Main orchestrator / entry point
 │   ├── cli.ts          # Handles all CLI interactions (inquirer prompts)
 │   ├── services/
-│   │   └── llmService.ts # Interacts with the LLM API (e.g., OpenRouter)
+│   │   ├── llmService.ts # Interacts with the LLM API (e.g., OpenRouter)
+│   │   ├── imageService.ts # Handles image generation via Replicate API
 │   │   └── schemaService.ts # Generates schema
 │   ├── managers/
 │   │   ├── siteGenerator.ts    # Generates site files from schema + templates
@@ -43,7 +44,8 @@ idea-factory-automator/
 │   └── utils/            # Optional: Small helper functions (e.g., sanitization, error handling)
 │   │   └── parser.js     # Parsers for LLM content
 ├── scripts/
-│   └── test-components.ts # Test script for components
+│   ├── test-components.ts # Test script for components
+│   └── test-image-generation.ts # Test script for image generation
 ├── dist/                # Compiled JavaScript output - added to .gitignore
 ├── tsconfig.json        # TypeScript configuration
 ├── .env                # Environment variables (API Keys, Repo URL) - added to .gitignore
@@ -80,7 +82,16 @@ The system is composed of several distinct components managed by a central orche
         *   Makes HTTP requests to the LLM API endpoint.
         *   Returns the parsed response (ideas list, schema JSON string, refined content) to the caller.
 
-4.  **Site Generator (`src/managers/siteGenerator.ts`)**
+4.  **Image Service (`src/services/imageService.ts`)**
+    *   **Responsibility:** Handles image generation using external APIs (primarily Replicate). Manages model selection, parameter validation, API calls, error handling, and image saving functionality.
+    *   **Interactions:**
+        *   Called by `Orchestrator` or `SiteGenerator` with image prompts from the schema.
+        *   Makes HTTP requests to the Replicate API endpoint with appropriate model parameters.
+        *   Supports multiple image generation models with model-specific parameter mapping.
+        *   Returns image URLs and handles saving images to the local filesystem.
+        *   Works with `FileManager` to organize and save generated images.
+
+5.  **Site Generator (`src/managers/siteGenerator.ts`)**
     *   **Responsibility:** Generates the actual `index.html` and `style.css` file content based on the approved schema and predefined templates. For v0, this uses the EJS templating engine.
     *   **Interactions:**
         *   Called by `Orchestrator` with the `approvedSchema`.
@@ -89,7 +100,7 @@ The system is composed of several distinct components managed by a central orche
         *   *(Optional V0 Enhancement/V1)* May call `llmService.ts` to refine raw copy ideas from the schema into final prose before rendering.
         *   Returns the rendered HTML and CSS content as strings to the `Orchestrator`.
 
-5.  **File Manager (`src/managers/fileManager.ts`)**
+6.  **File Manager (`src/managers/fileManager.ts`)**
     *   **Responsibility:** Handles all interactions with the local file system related to site generation output.
     *   **Interactions:**
         *   Called by `Orchestrator` with site name/identifier and base output path (`./output`).
@@ -98,7 +109,7 @@ The system is composed of several distinct components managed by a central orche
         *   Writes the `index.html` and `style.css` files to the specified directory.
         *   Returns the path to the created site directory.
 
-6.  **Deployment Manager (`src/managers/deploymentManager.ts`)**
+7.  **Deployment Manager (`src/managers/deploymentManager.ts`)**
     *   **Responsibility:** Handles the Git operations required to deploy the generated site files to the Netlify-watched repository. Uses `zx` to execute shell commands.
     *   **Interactions:**
         *   Called by `Orchestrator` with the path to the locally generated site files and a site identifier/name.
@@ -108,16 +119,23 @@ The system is composed of several distinct components managed by a central orche
         *   Stages, commits, and pushes the changes to the remote repository.
         *   Performs cleanup (removes the temporary clone).
 
-7.  **Templates (`src/templates/`)**
+8.  **Templates (`src/templates/`)**
     *   **Responsibility:** Provide the static structure and styling base for the generated websites. Contain EJS placeholders (`<%= ... %>`) for dynamic content, colors, fonts, etc., derived from the schema.
     *   **Interactions:**
         *   Read by `SiteGenerator` during the rendering process.
 
-8.  **Configuration (`.env`)**
+9.  **Configuration (`.env`)**
     *   **Responsibility:** Store secrets (API keys) and configuration (target Git repository URL) outside the codebase.
     *   **Interactions:**
         *   Read by `Orchestrator` (via `dotenv`) at startup.
         *   Values accessed via `process.env`.
+    *   **Key Variables:**
+        *   `OPENROUTER_API_KEY`: For LLM service authentication
+        *   `NETLIFY_GIT_REPO_URL`: Target repository for deployment
+        *   `DEFAULT_LLM_MODEL`: Optional model identifier for LLM service
+        *   `REPLICATE_API_TOKEN`: For image generation authentication
+        *   `REPLICATE_MODEL`: Optional model identifier for image generation
+        *   `OPENAI_API_KEY`: Optional, used by some Replicate models that integrate with OpenAI
 
 ## 4. Key Design Patterns & Principles
 
@@ -134,7 +152,11 @@ The system is composed of several distinct components managed by a central orche
 This architecture explicitly supports swapping components:
 
 *   **LLM Provider:** To change from OpenAI to Gemini (or another provider), only `src/services/llmService.ts` needs to be significantly modified or replaced. As long as it maintains the same function signature (e.g., `callLLM(prompt, options)` returning the expected data format), the rest of the application remains unchanged.
+
+*   **Image Generation:** To change from Replicate to another image generation service (e.g., DALL-E API directly), only `src/services/imageService.ts` needs to be modified. The interface (`generateImage`, `generateImagesFromSchema`) remains the same while the implementation details can change. The system is already designed to support multiple models within Replicate via configuration.
+
 *   **Site Generation:** To switch from EJS templates to a different static site generator (e.g., Astro+Tailwind), you would:
     1.  Create a new generator module (e.g., `src/managers/astroSiteGenerator.ts`) that adheres to the same implicit interface as `siteGenerator.ts` (i.e., takes a `schema` and eventually produces files/content).
     2.  Update the `Orchestrator` (`src/index.ts`) to import and call the new generator instead of the EJS-based one. The `schema` generation, `fileManager`, and `deploymentManager` would likely remain unchanged.
+
 *   **Deployment Method:** If switching from Git-based deployment to using the Netlify API directly, only `src/managers/deploymentManager.ts` would need to be rewritten.

@@ -66,6 +66,7 @@ A CLI tool that automates the creation of landing pages for product/startup idea
    DEFAULT_LLM_MODEL=google/gemini-2.5-pro-preview-03-25
    REPLICATE_API_TOKEN=your_replicate_api_token_here
    OPENAI_API_KEY=your_openai_api_key_here
+   REPLICATE_MODEL=openai/gpt-image-1
    ```
 
 ## Usage
@@ -141,7 +142,9 @@ You can test individual components using the scripts mentioned in the Usage sect
 ### Image Generation
 
 The image generation service (`src/services/imageService.ts`):
-- Uses Replicate's API with the openai/gpt-image-1 model
+- Uses Replicate's API with either:
+    - `openai/gpt-image-1` - this has better text, but slower and more expensive
+    - `black-forest-labs/flux-schnell` - cheaper and faster but weird text
 - Generates images based on text prompts from the schema
 - Supports the specific aspect ratios required by the model: "1:1" (square), "3:2" (landscape), "2:3" (portrait)
 - Uses "3:2" landscape format for hero images and "1:1" square format for feature images
