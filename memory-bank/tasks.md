@@ -271,49 +271,49 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Implement Git operations to commit and push the generated site to the Netlify-watched repository.
 **Dependencies:** Subtask 1, Subtask 2 (needs repo URL)
 **Steps:**
-- [ ] Open `src/managers/deploymentManager.ts`.
-- [ ] Import `$` and `cd` from `zx`: `import { $, cd } from 'zx'`. Ensure `zx` script is executable or run node with `--experimental-vm-modules`. Configure `$.verbose = false` if desired.
-- [ ] Import Node's `fs/promises` for cleanup.
-- [ ] Define an async function `deploySite(siteSourcePath, siteName)`:
-    - [ ] Retrieve repo URL from `process.env.NETLIFY_GIT_REPO_URL`.
-    - [ ] Define a temporary clone directory name (e.g., `temp-deploy-clone`).
-    - [ ] Wrap operations in a try/finally block for cleanup.
-    - [ ] Inside `try`:
-        - [ ] Clone the repo: `await $`git clone ${repoUrl} ${tempCloneDir}``.
-        - [ ] `cd(tempCloneDir)`.
-        - [ ] Define the target directory within the repo: `const targetDir = path.join(process.cwd(), siteName);` // Use path.join for compatibility
-        - [ ] Ensure target directory exists: `await fs.mkdir(targetDir, { recursive: true });`
-        - [ ] Copy generated files: `await $`cp -R ${siteSourcePath}/* ${targetDir}/``. (Ensure `siteSourcePath` is absolute or relative path resolution is correct).
-        - [ ] Stage changes: `await $`git add .``.
-        - [ ] Commit changes: `await $`git commit -m "feat: Add/update site for ${siteName}"``. (Consider checking `git status` first).
-        - [ ] Push changes: `await $`git push``.
-        - [ ] `cd('..')` // Exit the temp directory before cleanup.
-    - [ ] Inside `finally`:
-        - [ ] Clean up the temporary clone: `await fs.rm(tempCloneDir, { recursive: true, force: true });`
-        - [ ] Handle errors appropriately throughout the process (e.g., catch specific errors from `zx`).
-- [ ] Export `deploySite`.
+- [x] Open `src/managers/deploymentManager.ts`.
+- [x] Import `$` and `cd` from `zx`: `import { $, cd } from 'zx'`. Ensure `zx` script is executable or run node with `--experimental-vm-modules`. Configure `$.verbose = false` if desired.
+- [x] Import Node's `fs/promises` for cleanup.
+- [x] Define an async function `deploySite(siteSourcePath, siteName)`:
+    - [x] Retrieve repo URL from `process.env.NETLIFY_GIT_REPO_URL`.
+    - [x] Define a temporary clone directory name (e.g., `temp-deploy-clone`).
+    - [x] Wrap operations in a try/finally block for cleanup.
+    - [x] Inside `try`:
+        - [x] Clone the repo: `await $`git clone ${repoUrl} ${tempCloneDir}``.
+        - [x] `cd(tempCloneDir)`.
+        - [x] Define the target directory within the repo: `const targetDir = path.join(process.cwd(), siteName);` // Use path.join for compatibility
+        - [x] Ensure target directory exists: `await fs.mkdir(targetDir, { recursive: true });`
+        - [x] Copy generated files: `await $`cp -R ${siteSourcePath}/* ${targetDir}/``. (Ensure `siteSourcePath` is absolute or relative path resolution is correct).
+        - [x] Stage changes: `await $`git add .``.
+        - [x] Commit changes: `await $`git commit -m "feat: Add/update site for ${siteName}"``. (Consider checking `git status` first).
+        - [x] Push changes: `await $`git push``.
+        - [x] `cd('..')` // Exit the temp directory before cleanup.
+    - [x] Inside `finally`:
+        - [x] Clean up the temporary clone: `await fs.rm(tempCloneDir, { recursive: true, force: true });`
+        - [x] Handle errors appropriately throughout the process (e.g., catch specific errors from `zx`).
+- [x] Export `deploySite`.
 
 ### Subtask 11: Orchestrator Implementation
 **Goal:** Tie all the components together in the main script to execute the full workflow.
 **Dependencies:** Subtask 5, Subtask 6, Subtask 8, Subtask 9, Subtask 10
 **Steps:**
-- [ ] Open `src/index.ts`.
-- [ ] Import all necessary functions from `cli.ts`, `llmService.ts`, `siteGenerator.ts`, `fileManager.ts`, `deploymentManager.ts`.
-- [ ] Define a main `async` function `run()`:
-    - [ ] Call functions in the sequence defined by the PRD's Implementation Plan (Steps 1-12).
-    - [ ] Get topic (`cli.ts`).
-    - [ ] Generate & select idea (using `llmService.ts`, `cli.ts`).
-    - [ ] Get preferences (`cli.ts`).
-    - [ ] Generate & approve schema (loop using `llmService.ts`, `cli.ts`). Store `approvedSchema`.
-    - [ ] Generate site files using `siteGenerator.ts` -> `generateSiteFiles(approvedSchema)`. Store `fileContents`.
-    - [ ] Define base output directory (e.g., `./output`).
-    - [ ] Create site directory using `fileManager.ts` -> `createSiteDirectory(baseOutputDir, approvedSchema.brandName)`. Store `sitePath`. (Use a sanitized version of brandName for directory name).
-    - [ ] Save site files using `fileManager.ts` -> `saveSiteFiles(sitePath, fileContents.htmlContent, fileContents.cssContent)`.
-    - [ ] Deploy site using `deploymentManager.ts` -> `deploySite(sitePath, approvedSchema.brandName)`.
-    - [ ] Add logging/feedback to the console at each major step.
-    - [ ] Include top-level error handling.
-- [ ] Call `run()` at the end of the script.
-- [ ] Make `src/index.ts` executable or run via `node src/index.ts`.
+- [x] Open `src/index.ts`.
+- [x] Import all necessary functions from `cli.ts`, `llmService.ts`, `siteGenerator.ts`, `fileManager.ts`, `deploymentManager.ts`.
+- [x] Define a main `async` function `run()`:
+    - [x] Call functions in the sequence defined by the PRD's Implementation Plan (Steps 1-12).
+    - [x] Get topic (`cli.ts`).
+    - [x] Generate & select idea (using `llmService.ts`, `cli.ts`).
+    - [x] Get preferences (`cli.ts`).
+    - [x] Generate & approve schema (loop using `llmService.ts`, `cli.ts`). Store `approvedSchema`.
+    - [x] Generate site files using `siteGenerator.ts` -> `generateSiteFiles(approvedSchema)`. Store `fileContents`.
+    - [x] Define base output directory (e.g., `./output`).
+    - [x] Create site directory using `fileManager.ts` -> `createSiteDirectory(baseOutputDir, approvedSchema.brandName)`. Store `sitePath`. (Use a sanitized version of brandName for directory name).
+    - [x] Save site files using `fileManager.ts` -> `saveSiteFiles(sitePath, fileContents.htmlContent, fileContents.cssContent)`.
+    - [x] Deploy site using `deploymentManager.ts` -> `deploySite(sitePath, approvedSchema.brandName)`.
+    - [x] Add logging/feedback to the console at each major step.
+    - [x] Include top-level error handling.
+- [x] Call `run()` at the end of the script.
+- [x] Make `src/index.ts` executable or run via `node src/index.ts`.
 
 ---
 

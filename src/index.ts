@@ -21,8 +21,8 @@ import { generateSiteFiles, SiteFiles } from './managers/siteGenerator.js';
 import { createSiteDirectory, saveSiteFiles } from './managers/fileManager.js';
 // Import image service functions
 import { saveGeneratedImages } from './services/imageService.js';
-// This one will be for Subtask 10
-// import { deploySite } from './managers/deploymentManager.js';
+// Import the deployment manager
+import { deploySite } from './managers/deploymentManager.js';
 import path from 'path';
 
 /**
@@ -114,13 +114,18 @@ Make sure all 10 ideas are concise, practical, and marketable. Do not include an
     
     // Images are now saved during site generation, so we don't need to save them again here
     
-    // Step 9: Deployment (will be implemented in Subtask 10)
-    console.log('\n🚀 Landing page created successfully!');
-    console.log(`📂 Your site files are available at: ${siteDirectory}`);
-    console.log('Deployment to Netlify will be added in a future update.');
+    // Step 9: Deploy to Netlify
+    console.log('\n🚀 Deploying to Netlify...');
+    try {
+      await deploySite(siteDirectory, schema.brandName);
+      console.log('\n✅ Deployment completed! Your site will be live on Netlify shortly.');
+    } catch (deployError) {
+      console.error('⚠️ Deployment failed:', deployError instanceof Error ? deployError.message : String(deployError));
+      console.log('Your site files are still available locally.');
+    }
     
     // Log the path to open the site locally
-    console.log(`\n👀 To view your landing page, open this file in your browser:`);
+    console.log(`\n👀 To view your landing page locally, open this file in your browser:`);
     console.log(`📄 ${path.join(siteDirectory, 'index.html')}`);
     
   } catch (error) {

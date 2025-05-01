@@ -9,6 +9,7 @@
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "test-components": "tsx scripts/test-components.ts",
+    "test-deployment": "tsx scripts/test-deployment.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -20,14 +21,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "archiver": "^7.0.1",
     "axios": "^1.9.0",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "inquirer": "^12.6.0",
+    "netlify": "^13.3.5",
     "replicate": "^1.0.1",
     "zx": "^8.5.3"
   },
   "devDependencies": {
+    "@types/archiver": "^6.0.3",
     "@types/ejs": "^3.1.5",
     "@types/inquirer": "^9.0.7",
     "@types/node": "^20.17.32",

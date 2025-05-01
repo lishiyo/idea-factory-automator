@@ -1,7 +1,7 @@
 # Active Context - Idea Factory Automator
 
 ## Current Phase
-Implementation - Subtask 10 completed, ready for Subtask 11.
+Implementation - Subtask 11 completed, ready for Subtask 12 (end-to-end testing).
 
 ## Project Overview
 The Idea Factory Automator is a CLI-based tool that helps users:
@@ -56,7 +56,8 @@ For v0, we're focusing on the automated site creation workflow.
   │       └── parsers.ts    # Parsing utilities for LLM responses
   ├── scripts/
   │   ├── test-components.ts # Component testing script
-  │   └── test-image-generation.ts # Image generation testing script
+  │   ├── test-image-generation.ts # Image generation testing script
+  │   └── test-deployment.ts # Deployment testing script
   |   test-output/        # Generated files from testing
   ├── output/             # Generated sites (before deployment)
   ├── .env                # Environment variables (configured)
@@ -65,7 +66,7 @@ For v0, we're focusing on the automated site creation workflow.
   └── README.md
   ```
 - **Module Status**:
-  - index.ts: Implemented for idea generation, selection, schema generation, and image generation workflow
+  - index.ts: Fully implemented with complete workflow from idea generation to deployment
   - cli.ts: Fully implemented with inquirer for all user interactions
   - llmService.ts: Fully implemented with OpenRouter API integration
   - services/schemaService.ts: Implemented with step-by-step schema generation approach
@@ -73,7 +74,7 @@ For v0, we're focusing on the automated site creation workflow.
   - utils/parsers.ts: Implemented with robust parsing for LLM responses and JSON correction
   - siteGenerator.ts: Implemented with EJS rendering, content refinement, and image integration
   - fileManager.ts: Fully implemented with directory creation and file saving capabilities
-  - deploymentManager.ts: Placeholder Git operations
+  - deploymentManager.ts: Fully implemented with Git operations for Netlify deployment
   - templates: 
     - index.ejs: Responsive HTML template with Netlify form implementation and image support
     - style.ejs: CSS template with dynamic styling variables and image styling
@@ -90,11 +91,11 @@ For v0, we're focusing on the automated site creation workflow.
 - ✅ Subtask 8: Site Generator Implementation
 - ✅ Subtask 9: File System Manager Implementation
 - ✅ Subtask 10: Image Integration (Fixed image path issues and template rendering to display generated images)
+- ✅ Subtask 11: Deployment Manager Implementation
 
 ## Next Steps
-- Implement Subtask 11: Deployment Manager Implementation
-  - Create functions to handle Git operations
-  - Implement deploySite to clone repository, copy files, commit, and push
-  - Add error handling for Git operations
-  - Use zx to simplify shell command execution
-  - Ensure cleanup of temporary files
+- Implement Subtask 12: End-to-End Testing
+  - Test the complete workflow from idea generation to deployment
+  - Verify the deployed site works correctly on Netlify
+  - Test Netlify form functionality
+  - Create comprehensive test documentation
