@@ -14,7 +14,7 @@
 import 'dotenv/config';
 import { getTopic, selectIdea, getDesignPreferences, confirmSchema } from './cli.js';
 // These imports will be uncommented as we implement each module
-// import { callLLM } from './services/llmService.js';
+import { callLLM } from './services/llmService.js';
 // import { generateSiteFiles } from './managers/siteGenerator.js';
 // import { createSiteDirectory, saveSiteFiles } from './managers/fileManager.js';
 // import { deploySite } from './managers/deploymentManager.js';
