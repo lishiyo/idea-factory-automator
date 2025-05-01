@@ -9,6 +9,7 @@ import ejs from 'ejs';
 import { join } from 'path';
 import { readFile } from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Import callLLM for content refinement
 import { callLLM } from '../services/llmService.js';
@@ -21,7 +22,20 @@ import {
 } from '../services/imageService.js';
 
 // Import schema type
-import { LandingPageSchema } from '../utils/parsers.js';
+import { LandingPageSchema as SiteSchema } from '../utils/parsers.js';
+
+// Import LLM service type
+import { LLMService } from '../services/llmService.js';
+
+// Define interfaces
+interface GeneratedImages {
+  urls?: Record<string, string>;
+  localPaths?: Record<string, string>;
+}
+
+interface LLMService {
+  callLLM: (prompt: string, options?: any) => Promise<string>;
+}
 
 /**
  * Interface for the site files
@@ -30,6 +44,8 @@ export interface SiteFiles {
   htmlContent: string;
   cssContent: string;
   imageResults?: Record<string, ImageGenerationResult>;
+  successPage: string;
+  generatedImages?: GeneratedImages;
 }
 
 /**
@@ -62,136 +78,192 @@ Return ONLY a JSON object with the same structure as the original, but with enha
 }
 
 /**
- * Generates site files (HTML and CSS) based on the provided schema
- * @param {Object} schema The approved schema object containing all site content and styling
- * @param {string} selectedIdea The idea selected by the user (for content refinement)
- * @param {string} designPreferences The design preferences specified by the user (for content refinement)
- * @param {boolean} enableRefinement Whether to enable content refinement (default: false)
- * @param {boolean} generateImages Whether to generate images using AI (default: false)
- * @returns {Promise<SiteFiles>} Object containing htmlContent and cssContent strings
+ * Refines the content in the schema using the LLM
+ * @param schema Site schema
+ * @param llmService LLM service for content refinement
+ * @returns Refined schema
+ */
+async function refineContent(schema: SiteSchema, llmService: LLMService): Promise<SiteSchema> {
+  console.log('✨ Refining content for better engagement...');
+  
+  try {
+    // Create a refinement prompt based on schema content
+    const refinementPrompt = `
+    You are a professional copywriter. Please refine the following website content to be more engaging,
+    persuasive, and aligned with the brand voice. The brand is "${schema.brandName}" with the following
+    characteristics:
+    - Industry/Product: ${schema.industry || "Technology"}
+    - Design style: ${schema.designStyle || "Modern"}
+    
+    Current content:
+    - Headline: "${schema.copyBlocks.headline}"
+    - Subheadline: "${schema.copyBlocks.subheadline}"
+    - Value Proposition: "${schema.copyBlocks.valueProposition}"
+    - Call to Action: "${schema.copyBlocks.callToAction}"
+    
+    Please provide improved versions of each text element. Return ONLY the refined text in JSON format:
+    {
+      "headline": "refined headline",
+      "subheadline": "refined subheadline",
+      "valueProposition": "refined value proposition",
+      "callToAction": "refined call to action"
+    }
+    `;
+    
+    const refinedContentString = await llmService.callLLM(refinementPrompt);
+    
+    try {
+      // Extract JSON from potential markdown response
+      let jsonString = refinedContentString;
+      
+      // Remove markdown code blocks if present
+      if (refinedContentString.includes('```json')) {
+        jsonString = refinedContentString.replace(/```json\n|\n```/g, '');
+      } else if (refinedContentString.includes('```')) {
+        jsonString = refinedContentString.replace(/```\n|\n```/g, '');
+      }
+      
+      // Parse the JSON
+      const refinedContent = JSON.parse(jsonString);
+      
+      // Update the schema with refined content
+      const refinedSchema = { 
+        ...schema,
+        copyBlocks: {
+          ...schema.copyBlocks,
+          ...refinedContent
+        }
+      };
+      
+      console.log('✅ Content successfully refined for improved engagement');
+      return refinedSchema;
+    } catch (parseError) {
+      console.warn('⚠️ Failed to parse refined content:', parseError instanceof Error ? parseError.message : String(parseError));
+      console.log('Continuing with original content...');
+      return schema;
+    }
+  } catch (error) {
+    console.warn('⚠️ Content refinement skipped due to error:', error instanceof Error ? error.message : String(error));
+    console.log('Continuing with original content...');
+    return schema;
+  }
+}
+
+/**
+ * Generates a success page for form submissions
+ * @param schema Site schema
+ * @returns HTML content for the success page
+ */
+async function generateSuccessPage(schema: SiteSchema): Promise<string> {
+  const successHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You - ${schema.brandName}</title>
+  <link rel="stylesheet" href="../style.css">
+  <!-- Add Google Fonts based on schema -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=${schema.font.heading.replace(' ', '+')}&family=${schema.font.body.replace(' ', '+')}&display=swap" rel="stylesheet">
+  <style>
+    .success-container {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    .success-icon {
+      font-size: 4rem;
+      color: var(--accent-color);
+      margin-bottom: 2rem;
+    }
+    .back-button {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary-color);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 0.25rem;
+      font-weight: bold;
+    }
+    .back-button:hover {
+      background-color: var(--secondary-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="container success-container">
+    <div class="success-icon">✓</div>
+    <h1>Thank You!</h1>
+    <p>Your message has been successfully submitted. We'll be in touch soon!</p>
+    <a href="/" class="back-button">Return to Home</a>
+  </div>
+</body>
+</html>
+  `;
+  
+  return successHtml;
+}
+
+/**
+ * Generates site files (HTML & CSS) from the provided schema
+ * @param schema Site schema
+ * @param doContentRefinement Whether to refine content using the LLM
+ * @param llmService LLM service for content refinement (optional)
+ * @param imageGeneration Whether to generate images for the site
+ * @param imageService Image service for image generation (optional)
+ * @returns Object containing the rendered HTML and CSS content
  */
 export async function generateSiteFiles(
-  schema: Record<string, any>,
-  selectedIdea?: string,
-  designPreferences?: string,
-  enableRefinement: boolean = false,
-  generateImages: boolean = false
-): Promise<SiteFiles> {
-  console.log('Generating site files from schema...');
+  schema: SiteSchema,
+  doContentRefinement: boolean = false,
+  llmService?: LLMService,
+  imageGeneration: boolean = false,
+  imageService?: any
+): Promise<{ html: string; css: string; successPage: string; generatedImages?: GeneratedImages }> {
+  console.log('🏗️ Generating site files from schema...');
   
-  // Define template paths - using path.resolve to get absolute paths
-  const templatesDir = path.resolve(process.cwd(), 'src', 'templates');
-  const indexTemplatePath = path.join(templatesDir, 'index.ejs');
-  const styleTemplatePath = path.join(templatesDir, 'style.ejs');
+  let refinedSchema = schema;
+  let generatedImages: GeneratedImages | undefined;
   
-  // Optional content refinement
-  if (enableRefinement && selectedIdea && designPreferences) {
+  // Refine content if requested
+  if (doContentRefinement && llmService) {
+    refinedSchema = await refineContent(schema, llmService);
+  }
+  
+  // Generate images if requested
+  if (imageGeneration && imageService) {
     try {
-      console.log('Refining content for better engagement...');
-      const refinementPrompt = generateContentRefinementPrompt(
-        selectedIdea,
-        designPreferences,
-        schema
-      );
-      
-      const refinedContentString = await callLLM(refinementPrompt);
-      
-      try {
-        // Fix for handling JSON responses wrapped in markdown code blocks
-        let jsonString = refinedContentString;
-        
-        // Remove markdown code blocks if present
-        if (refinedContentString.includes('```json')) {
-          jsonString = refinedContentString.replace(/```json\n|\n```/g, '');
-        } else if (refinedContentString.includes('```')) {
-          jsonString = refinedContentString.replace(/```\n|\n```/g, '');
-        }
-        
-        // Parse the JSON
-        const refinedContent = JSON.parse(jsonString);
-        
-        // Replace the original copy blocks with refined ones
-        schema.copyBlocks = {
-          ...schema.copyBlocks, // Keep the original as fallback
-          ...refinedContent     // Override with refined content
-        };
-        
-        console.log("Content successfully refined for improved engagement.");
-      } catch (parseError: unknown) {
-        console.warn("Failed to parse refined content:", (parseError as Error).message);
-        console.log("Continuing with original content.");
-      }
-    } catch (refinementError: unknown) {
-      console.warn("Content refinement skipped due to error:", (refinementError as Error).message);
-      console.log("Continuing with original content.");
+      console.log('🖼️ Generating images for landing page...');
+      generatedImages = await imageService.generateImagesFromSchema(refinedSchema);
+      console.log('✅ Successfully generated all requested images');
+    } catch (error) {
+      console.error('⚠️ Error generating images:', error);
+      console.log('Continuing with site generation without images...');
     }
   }
   
-  // Optional image generation
-  let imageResults: Record<string, ImageGenerationResult> = {};
-  if (generateImages) {
-    try {
-      console.log('Generating images for the landing page...');
-      // Cast schema to LandingPageSchema since we know it has the required structure
-      imageResults = await generateImagesFromSchema(schema as unknown as LandingPageSchema);
-      
-      // Debug the imageResults
-      console.log('DEBUG: Raw imageResults:', Object.keys(imageResults));
-      for (const [key, result] of Object.entries(imageResults)) {
-        console.log(`DEBUG: Image result for ${key}:`, JSON.stringify({
-          success: (result as ImageGenerationResult).success,
-          hasLocalPaths: !!(result as ImageGenerationResult).localPaths,
-          localPathsLength: (result as ImageGenerationResult).localPaths?.length || 0
-        }));
-      }
-      
-      // Save images BEFORE adding paths to schema
-      const baseOutputDir = path.resolve(process.cwd(), 'output');
-      console.log('Saving generated images to disk...');
-      await saveGeneratedImages(imageResults, baseOutputDir, schema.brandName);
-      
-      // Add image paths to schema for template use
-      schema.generatedImages = {};
-      for (const [key, result] of Object.entries(imageResults)) {
-        const typedResult = result as ImageGenerationResult;
-        if (typedResult.success && typedResult.localPaths && typedResult.localPaths.length > 0) {
-          // Use relative path for templates (base will be the site directory)
-          schema.generatedImages[key] = `images/${path.basename(typedResult.localPaths[0])}`;
-          console.log(`DEBUG: Adding image path for ${key}: ${schema.generatedImages[key]}`);
-        } else {
-          console.log(`DEBUG: Skipping image for ${key}, conditions not met:`, {
-            success: typedResult.success,
-            hasLocalPaths: !!typedResult.localPaths,
-            pathsLength: typedResult.localPaths?.length || 0
-          });
-        }
-      }
-      
-      // Debug output to see what's in generatedImages
-      console.log('DEBUG: generatedImages object:', JSON.stringify(schema.generatedImages));
-    } catch (imageError) {
-      console.warn('Image generation skipped due to error:', (imageError as Error).message);
-      console.log('Continuing with placeholder images.');
-    }
-  }
+  // Template paths
+  const templateDir = path.resolve(fileURLToPath(import.meta.url), '../../templates');
+  const htmlTemplatePath = path.join(templateDir, 'index.ejs');
+  const cssTemplatePath = path.join(templateDir, 'style.ejs');
   
-  // Generate the HTML and CSS content using EJS templates
+  // Render HTML and CSS using EJS templates
   try {
-    console.log('Rendering HTML template...');
-    const htmlContent = await ejs.renderFile(indexTemplatePath, schema);
+    const html = await ejs.renderFile(htmlTemplatePath, {
+      ...refinedSchema,
+      generatedImages: generatedImages ? generatedImages.localPaths : undefined
+    });
     
-    console.log('Rendering CSS template...');
-    const cssContent = await ejs.renderFile(styleTemplatePath, schema);
+    const css = await ejs.renderFile(cssTemplatePath, refinedSchema);
     
-    console.log('Site files generated successfully!');
+    // Generate success page
+    const successPage = await generateSuccessPage(refinedSchema);
     
-    return {
-      htmlContent,
-      cssContent,
-      imageResults: Object.keys(imageResults).length > 0 ? imageResults : undefined
-    };
-  } catch (renderError: unknown) {
-    console.error('Error rendering templates:', (renderError as Error).message);
-    throw new Error(`Failed to render templates: ${(renderError as Error).message}`);
+    return { html, css, successPage, generatedImages };
+  } catch (error) {
+    console.error('❌ Failed to render templates:', error);
+    throw new Error(`Template rendering failed: ${error instanceof Error ? error.message : String(error)}`);
   }
 } 

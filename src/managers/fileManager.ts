@@ -41,27 +41,46 @@ export async function createSiteDirectory(baseDir: string, siteName: string): Pr
 }
 
 /**
- * Saves the generated HTML and CSS files to the specified directory
- * 
- * @param dirPath - The directory path where files will be saved
- * @param htmlContent - The HTML content to save
- * @param cssContent - The CSS content to save
+ * Saves the generated site files (HTML, CSS, success page) to the output directory
+ * @param siteDirectory Path to the site directory
+ * @param siteFiles Object containing the HTML and CSS content
+ * @returns Promise resolving to an object with the saved file paths
  */
-export async function saveSiteFiles(dirPath: string, htmlContent: string, cssContent: string): Promise<void> {
-  console.log('saveSiteFiles: Called with', { dirPath, htmlContentLength: htmlContent.length, cssContentLength: cssContent.length });
-  
+export async function saveSiteFiles(
+  siteDirectory: string, 
+  siteFiles: { html: string; css: string; successPage?: string }
+): Promise<{ htmlPath: string; cssPath: string; successPath?: string }> {
   try {
-    // Construct file paths
-    const htmlPath = path.join(dirPath, 'index.html');
-    const cssPath = path.join(dirPath, 'style.css');
+    console.log('📝 Saving site files to:', siteDirectory);
     
-    // Write the files
-    await fs.writeFile(htmlPath, htmlContent);
-    await fs.writeFile(cssPath, cssContent);
+    // Define file paths
+    const htmlPath = path.join(siteDirectory, 'index.html');
+    const cssPath = path.join(siteDirectory, 'style.css');
     
-    console.log(`Saved site files to ${dirPath}`);
-  } catch (error) {
-    console.error(`Failed to save site files: ${error}`);
+    // Write the HTML content
+    await fs.writeFile(htmlPath, siteFiles.html);
+    console.log('✅ Saved HTML file to:', htmlPath);
+    
+    // Write the CSS content
+    await fs.writeFile(cssPath, siteFiles.css);
+    console.log('✅ Saved CSS file to:', cssPath);
+    
+    // Save the success page if provided
+    let successPath: string | undefined;
+    if (siteFiles.successPage) {
+      // Create a success directory
+      const successDir = path.join(siteDirectory, 'success');
+      await fs.mkdir(successDir, { recursive: true });
+      
+      // Write the success page
+      successPath = path.join(successDir, 'index.html');
+      await fs.writeFile(successPath, siteFiles.successPage);
+      console.log('✅ Saved success page to:', successPath);
+    }
+    
+    return { htmlPath, cssPath, successPath };
+  } catch (error: unknown) {
+    console.error('❌ Error saving site files:', (error as Error).message);
     throw new Error(`Failed to save site files: ${(error as Error).message}`);
   }
 } 
