@@ -8,7 +8,7 @@ A CLI tool that automates the creation of landing pages for product/startup idea
 - Create a schema with brand elements, copy, and design specifications
 - Generate AI-powered images for your landing page using Replicate
 - Generate a responsive landing page with a Netlify form for collecting emails
-- Deploy the site to a Netlify-watched Git repository
+- Deploy the site to Netlify using the Netlify API
 
 ## How It Works
 
@@ -19,7 +19,7 @@ A CLI tool that automates the creation of landing pages for product/startup idea
 5. **Image Generation**: Images are created using Replicate's API based on generated prompts (hero, features, etc.)
 6. **Site Generation**: A responsive landing page is built using EJS templates with your schema data
 7. **Local Saving**: The complete site with HTML, CSS, and images is saved to your local filesystem
-8. **Deployment**: (Coming soon) The site is deployed to Netlify via Git for immediate hosting
+8. **Deployment**: The site is deployed directly to Netlify via their API for immediate hosting
 
 ## Tech Stack
 
@@ -33,18 +33,17 @@ A CLI tool that automates the creation of landing pages for product/startup idea
   - ejs: Templating for HTML/CSS generation
   - axios: API requests
   - dotenv: Environment variable management
-  - zx: Shell commands for Git operations
-  - Replicate: Image generation client
+  - netlify: API client for deployment
+  - archiver: ZIP creation for deployment
 
 ## Prerequisites
 
 - Node.js (v18 or higher)
 - npm or yarn
-- Git (for deployment)
 - OpenRouter API key
 - OpenAI API key (for image generation)
 - Replicate API token
-- A Git repository connected to Netlify
+- Netlify account and API token
 
 ## Installation
 
@@ -62,11 +61,12 @@ A CLI tool that automates the creation of landing pages for product/startup idea
 3. Create a `.env` file in the root directory with the following variables:
    ```
    OPENROUTER_API_KEY=your_openrouter_api_key_here
-   NETLIFY_GIT_REPO_URL=your_netlify_watched_git_repo_url_here
    DEFAULT_LLM_MODEL=google/gemini-2.5-pro-preview-03-25
    REPLICATE_API_TOKEN=your_replicate_api_token_here
    OPENAI_API_KEY=your_openai_api_key_here
    REPLICATE_MODEL=openai/gpt-image-1
+   NETLIFY_AUTH_TOKEN=your_netlify_auth_token_here
+   NETLIFY_SITE_ID=optional_existing_site_id
    ```
 
 ## Usage
@@ -83,9 +83,9 @@ npm start
 
 Currently, you can run the following tests and components:
 
-1. Test flow up to site generation with images in cli:
+1. Test full flow to deployment:
    ```
-   npx run dev
+   npm run dev
    ```
 
 2. Test only site generation (HTML/CSS rendering):
@@ -99,6 +99,12 @@ Currently, you can run the following tests and components:
    npx tsx scripts/test-image-generation.ts
    ```
    This will generate a test image using Replicate's API and save it in `test-output/image-test/test-site/images`.
+
+4. Test only deployment to Netlify:
+   ```
+   npx tsx scripts/test-deployment.ts
+   ```
+   This will create and deploy a simple test site to Netlify using the API.
 
 ## Project Structure
 

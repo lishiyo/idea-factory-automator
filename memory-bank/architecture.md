@@ -37,7 +37,7 @@ idea-factory-automator/
 │   ├── managers/
 │   │   ├── siteGenerator.ts    # Generates site files from schema + templates
 │   │   ├── fileManager.ts      # Handles file system operations (create dir, save files)
-│   │   └── deploymentManager.ts # Handles Git operations (clone, copy, commit, push)
+│   │   └── deploymentManager.ts # Handles Netlify deployment via API
 │   ├── templates/
 │   │   ├── index.ejs     # HTML template
 │   │   └── style.ejs     # CSS template (or style.css)
@@ -45,10 +45,11 @@ idea-factory-automator/
 │   │   └── parser.js     # Parsers for LLM content
 ├── scripts/
 │   ├── test-components.ts # Test script for components
-│   └── test-image-generation.ts # Test script for image generation
+│   ├── test-image-generation.ts # Test script for image generation
+│   └── test-deployment.ts # Test script for Netlify deployment
 ├── dist/                # Compiled JavaScript output - added to .gitignore
 ├── tsconfig.json        # TypeScript configuration
-├── .env                # Environment variables (API Keys, Repo URL) - added to .gitignore
+├── .env                # Environment variables (API Keys) - added to .gitignore
 ├── .gitignore
 ├── package.json
 └── package-lock.json
@@ -66,7 +67,7 @@ The system is composed of several distinct components managed by a central orche
         *   Calls `llmService.ts` to fetch ideas and generate the schema.
         *   Calls `siteGenerator.ts` with the approved schema to get site file content.
         *   Calls `fileManager.ts` to save the generated content to a local directory.
-        *   Calls `deploymentManager.ts` to push the local directory to the Git repository.
+        *   Calls `deploymentManager.ts` to deploy the local directory to Netlify.
         *   Provides console feedback on progress and errors.
 
 2.  **CLI (`src/cli.ts`)**
@@ -110,14 +111,16 @@ The system is composed of several distinct components managed by a central orche
         *   Returns the path to the created site directory.
 
 7.  **Deployment Manager (`src/managers/deploymentManager.ts`)**
-    *   **Responsibility:** Handles the Git operations required to deploy the generated site files to the Netlify-watched repository. Uses `zx` to execute shell commands.
+    *   **Responsibility:** Handles the deployment of the generated site files to Netlify using their API. Creates a ZIP archive of site files and uploads it directly to Netlify's deployment API.
     *   **Interactions:**
         *   Called by `Orchestrator` with the path to the locally generated site files and a site identifier/name.
-        *   Reads the target Git repository URL from `process.env`.
-        *   Clones the repository to a temporary location.
-        *   Copies the generated site files into the appropriate subdirectory within the clone.
-        *   Stages, commits, and pushes the changes to the remote repository.
-        *   Performs cleanup (removes the temporary clone).
+        *   Reads the Netlify authentication token from `process.env`.
+        *   Creates a ZIP archive of the site files using the `archiver` package.
+        *   Either creates a new site on Netlify or uses an existing site ID from environment variables.
+        *   Uploads the ZIP file to Netlify's deployment API using `axios`.
+        *   Monitors the deployment status by polling the Netlify API.
+        *   Returns deployment status and site URL information.
+        *   Performs cleanup (removes the temporary ZIP file).
 
 8.  **Templates (`src/templates/`)**
     *   **Responsibility:** Provide the static structure and styling base for the generated websites. Contain EJS placeholders (`<%= ... %>`) for dynamic content, colors, fonts, etc., derived from the schema.
@@ -125,13 +128,14 @@ The system is composed of several distinct components managed by a central orche
         *   Read by `SiteGenerator` during the rendering process.
 
 9.  **Configuration (`.env`)**
-    *   **Responsibility:** Store secrets (API keys) and configuration (target Git repository URL) outside the codebase.
+    *   **Responsibility:** Store secrets (API keys) and configuration outside the codebase.
     *   **Interactions:**
         *   Read by `Orchestrator` (via `dotenv`) at startup.
         *   Values accessed via `process.env`.
     *   **Key Variables:**
         *   `OPENROUTER_API_KEY`: For LLM service authentication
-        *   `NETLIFY_GIT_REPO_URL`: Target repository for deployment
+        *   `NETLIFY_AUTH_TOKEN`: For Netlify API authentication
+        *   `NETLIFY_SITE_ID`: Optional existing site ID for deployment
         *   `DEFAULT_LLM_MODEL`: Optional model identifier for LLM service
         *   `REPLICATE_API_TOKEN`: For image generation authentication
         *   `REPLICATE_MODEL`: Optional model identifier for image generation
@@ -159,4 +163,4 @@ This architecture explicitly supports swapping components:
     1.  Create a new generator module (e.g., `src/managers/astroSiteGenerator.ts`) that adheres to the same implicit interface as `siteGenerator.ts` (i.e., takes a `schema` and eventually produces files/content).
     2.  Update the `Orchestrator` (`src/index.ts`) to import and call the new generator instead of the EJS-based one. The `schema` generation, `fileManager`, and `deploymentManager` would likely remain unchanged.
 
-*   **Deployment Method:** If switching from Git-based deployment to using the Netlify API directly, only `src/managers/deploymentManager.ts` would need to be rewritten.
+*   **Deployment Method:** The current deployment uses the Netlify API directly. If switching to a different hosting provider or deployment method (e.g., Vercel, GitHub Pages), only `src/managers/deploymentManager.ts` would need to be rewritten while maintaining the same interface.
