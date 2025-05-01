@@ -1,22 +1,22 @@
 # Idea Factory Automator - Progress Log
 
-## 2023-06-12
+## 2025-04-30
 - Created initial project requirements document (v0_prd.md)
 - Defined core user flow and components
 - Determined v0 scope focusing on automated site creation
 
-## 2023-06-13
+## 2025-05-01
 - Developed detailed architecture document (architecture.md)
 - Designed modular component structure
 - Created directory layout plan
 - Defined interfaces between components
 
-## 2023-06-14
+## 2025-05-01
 - Completed implementation planning
 - Created detailed task breakdown in tasks.md
 - Identified core dependencies and implementation strategy
 
-## Current Status (2023-06-15)
+## Current Status (2025-05-01)
 - Subtask 1 completed: Project initialization and basic structure setup
 - Created Node.js project with ES Modules configuration
 - Set up project directory structure following architecture document
@@ -33,11 +33,30 @@
 - Environment: macOS
 - Platform: Node.js with ES Modules
 
+## 2025-05-01
+- Subtask 2 completed: Configuration and Secrets Management
+  - Set up dotenv for environment variables
+  - Configured index.js to use environment variables
+  - Created .env structure with placeholders for API keys and repo URL
+  - Added DEFAULT_LLM_MODEL environment variable for flexibility
+- Subtask 3 completed: LLM Service Implementation
+  - Implemented callLLM function in llmService.js
+  - Set up proper error handling for API calls
+  - Configured OpenRouter API request format
+  - Added detailed error reporting for troubleshooting
+- Subtask 4 completed: Basic CLI Interface Setup
+  - Implemented all CLI interaction functions with inquirer
+  - Created interactive prompts for topic, idea selection, design preferences
+  - Added schema confirmation interface with approval options
+  - Improved user experience with emoji indicators and validation
+
 ## Upcoming Milestones
 1. ✅ Project initialization and setup (Completed)
-2. Core orchestrator and CLI implementation
-3. LLM service integration
-4. Template creation and site generation
-5. File system management
-6. Deployment integration
-7. End-to-end testing
+2. ✅ Configuration and secrets management (Completed)
+3. ✅ LLM service integration (Completed)
+4. ✅ CLI interface implementation (Completed)
+5. ⏳ Idea generation and selection (Subtask 5)
+6. Template creation and site generation
+7. File system management
+8. Deployment integration
+9. End-to-end testing

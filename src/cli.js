@@ -12,9 +12,21 @@ import inquirer from 'inquirer';
  * @returns {Promise<string>} The entered topic
  */
 export async function getTopic() {
-  // Placeholder implementation
-  console.log('getTopic: To be implemented in Subtask 4');
-  return 'cats'; // Default topic for testing
+  const { topic } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'topic',
+      message: '🔍 What topic are you interested in for startup ideas?',
+      validate: (input) => {
+        if (input.trim() === '') {
+          return 'Please enter a topic';
+        }
+        return true;
+      }
+    }
+  ]);
+  
+  return topic.trim();
 }
 
 /**
@@ -23,9 +35,26 @@ export async function getTopic() {
  * @returns {Promise<string>} The selected idea
  */
 export async function selectIdea(ideas) {
-  // Placeholder implementation
-  console.log('selectIdea: To be implemented in Subtask 4');
-  return ideas[0]; // Default selection for testing
+  if (!Array.isArray(ideas) || ideas.length === 0) {
+    throw new Error('No ideas provided to select from');
+  }
+  
+  console.log('\n✨ Here are some startup ideas based on your topic:');
+  
+  const { selectedIdea } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'selectedIdea',
+      message: '📊 Which idea resonates with you the most?',
+      choices: ideas.map(idea => ({
+        name: idea,
+        value: idea
+      })),
+      pageSize: Math.min(ideas.length, 10)
+    }
+  ]);
+  
+  return selectedIdea;
 }
 
 /**
@@ -33,9 +62,26 @@ export async function selectIdea(ideas) {
  * @returns {Promise<string>} The selected design style
  */
 export async function getDesignPreferences() {
-  // Placeholder implementation
-  console.log('getDesignPreferences: To be implemented in Subtask 4');
-  return 'modern'; // Default style for testing
+  const designStyles = [
+    'Modern & Minimal',
+    'Bold & Vibrant',
+    'Professional & Corporate',
+    'Playful & Creative',
+    'Elegant & Sophisticated',
+    'Tech & Digital'
+  ];
+  
+  const { designStyle } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'designStyle',
+      message: '🎨 What design style would you prefer for your landing page?',
+      choices: designStyles,
+      default: 'Modern & Minimal'
+    }
+  ]);
+  
+  return designStyle;
 }
 
 /**
@@ -44,7 +90,22 @@ export async function getDesignPreferences() {
  * @returns {Promise<string>} User choice: 'approve', 'regenerate', or 'cancel'
  */
 export async function confirmSchema(schema) {
-  // Placeholder implementation
-  console.log('confirmSchema: To be implemented in Subtask 4');
-  return 'approve'; // Default action for testing
+  // Pretty print the schema for readability
+  console.log('\n📋 Generated Site Schema:');
+  console.log(JSON.stringify(schema, null, 2));
+  
+  const { action } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'action',
+      message: '👍 Does this schema look good to you?',
+      choices: [
+        { name: 'Yes, approve and continue', value: 'approve' },
+        { name: 'No, regenerate the schema', value: 'regenerate' },
+        { name: 'Cancel and exit', value: 'cancel' }
+      ]
+    }
+  ]);
+  
+  return action;
 }

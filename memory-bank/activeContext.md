@@ -1,7 +1,7 @@
 # Active Context - Idea Factory Automator
 
 ## Current Phase
-Implementation - Subtask 1 completed, ready for subsequent tasks.
+Implementation - Subtasks 2, 3, and 4 completed, ready for Subtask 5.
 
 ## Project Overview
 The Idea Factory Automator is a CLI-based tool that helps users:
@@ -27,6 +27,7 @@ For v0, we're focusing on the automated site creation workflow.
 - **Required Environment Variables**:
   - OPENROUTER_API_KEY
   - NETLIFY_GIT_REPO_URL
+  - DEFAULT_LLM_MODEL (added for flexibility)
 
 ## Current Implementation Status
 - **Project Structure**: Created and organized following architecture.md
@@ -47,20 +48,29 @@ For v0, we're focusing on the automated site creation workflow.
   │   │   └── style.ejs     # CSS template
   │   └── utils/            # Helper functions
   ├── output/             # Generated sites (before deployment)
-  ├── .env                # Environment variables (needs to be created)
+  ├── .env                # Environment variables (configured)
   ├── package.json
   └── README.md
   ```
 - **Module Status**:
-  - index.js: Basic structure with placeholder implementations
-  - cli.js: Function definitions with placeholder implementations
-  - llmService.js: Mock API call implementation for testing
+  - index.js: Basic structure with dotenv configuration, ready for workflow implementation
+  - cli.js: Fully implemented with inquirer for all user interactions
+  - llmService.js: Fully implemented with OpenRouter API integration
   - siteGenerator.js: Placeholder EJS rendering implementation
   - fileManager.js: Placeholder file operations
   - deploymentManager.js: Placeholder Git operations
   - templates: Basic responsive HTML/CSS templates created
+  - Environment Variables: Structure defined with placeholders
+
+## Completed Tasks
+- ✅ Subtask 1: Project Setup & Core Dependencies
+- ✅ Subtask 2: Configuration and Secrets Management
+- ✅ Subtask 3: LLM Service Implementation
+- ✅ Subtask 4: Basic CLI Interface Setup
 
 ## Next Steps
-- Implement core orchestrator with full workflow (Subtask 2)
-- Implement LLM service with actual OpenRouter API integration (Subtask 3)
-- Implement CLI interactions with inquirer (Subtask 4)
+- Implement Subtask 5: Idea Generation Integration
+  - Modify index.js to use cli.js and llmService.js for generating and selecting startup ideas
+  - Add parsing logic for LLM responses to extract ideas as an array
+  - Handle potential formatting inconsistencies in LLM outputs
+- Prepare for Subtask 6: Schema Generation Integration

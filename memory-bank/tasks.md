@@ -133,7 +133,7 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
     OPENROUTER_API_KEY=your_openrouter_api_key_here
     NETLIFY_GIT_REPO_URL=your_netlify_watched_git_repo_url_here
     ```
-- [ ] In `src/index.js` (or a dedicated config module if preferred), import and configure `dotenv`:
+- [x] In `src/index.js` (or a dedicated config module if preferred), import and configure `dotenv`:
     ```javascript
     import 'dotenv/config';
     // Access variables like process.env.OPENROUTER_API_KEY
@@ -143,31 +143,31 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Create a reusable service to interact with the OpenRouter API.
 **Dependencies:** Subtask 1, Subtask 2
 **Steps:**
-- [ ] Open `src/services/llmService.js`.
-- [ ] Import `axios`.
-- [ ] Define an async function `callLLM(prompt, options = {})`.
-- [ ] Inside the function:
-    - [ ] Retrieve API key from `process.env.OPENROUTER_API_KEY`.
-    - [ ] Set up request headers (Authorization).
-    - [ ] Set up request body based on OpenRouter API requirements (model, messages/prompt, temperature, max_tokens etc. - pass relevant `options`).
-    - [ ] Use `axios.post` to make the API call to the OpenRouter completions endpoint.
-    - [ ] Handle potential errors (network issues, API errors) gracefully (e.g., try/catch).
-    - [ ] Parse the response to extract the relevant text/JSON content.
-    - [ ] Return the parsed content.
-- [ ] Export the `callLLM` function.
+- [x] Open `src/services/llmService.js`.
+- [x] Import `axios`.
+- [x] Define an async function `callLLM(prompt, options = {})`.
+- [x] Inside the function:
+    - [x] Retrieve API key from `process.env.OPENROUTER_API_KEY`.
+    - [x] Set up request headers (Authorization).
+    - [x] Set up request body based on OpenRouter API requirements (model, messages/prompt, temperature, max_tokens etc. - pass relevant `options`).
+    - [x] Use `axios.post` to make the API call to the OpenRouter completions endpoint.
+    - [x] Handle potential errors (network issues, API errors) gracefully (e.g., try/catch).
+    - [x] Parse the response to extract the relevant text/JSON content.
+    - [x] Return the parsed content.
+- [x] Export the `callLLM` function.
 
 ### Subtask 4: Basic CLI Interface Setup
 **Goal:** Implement the core user interaction flow using `inquirer`.
 **Dependencies:** Subtask 1
 **Steps:**
-- [ ] Open `src/cli.js`.
-- [ ] Import `inquirer`.
-- [ ] Create async functions for each user interaction point:
-    - [ ] `getTopic()`: Prompts user for the initial topic string. Returns the topic.
-    - [ ] `selectIdea(ideas)`: Takes a list of idea strings, presents them as a choice list. Returns the selected idea string.
-    - [ ] `getDesignPreferences()`: Asks user for design style (e.g., "modern", "playful", "minimalist"). Returns the preference string.
-    - [ ] `confirmSchema(schema)`: Takes the generated schema (as a JS object), pretty-prints it (e.g., `JSON.stringify(schema, null, 2)`), and asks for confirmation (Yes/No/Regenerate). Returns the user's choice.
-- [ ] Export these functions.
+- [x] Open `src/cli.js`.
+- [x] Import `inquirer`.
+- [x] Create async functions for each user interaction point:
+    - [x] `getTopic()`: Prompts user for the initial topic string. Returns the topic.
+    - [x] `selectIdea(ideas)`: Takes a list of idea strings, presents them as a choice list. Returns the selected idea string.
+    - [x] `getDesignPreferences()`: Asks user for design style (e.g., "modern", "playful", "minimalist"). Returns the preference string.
+    - [x] `confirmSchema(schema)`: Takes the generated schema (as a JS object), pretty-prints it (e.g., `JSON.stringify(schema, null, 2)`), and asks for confirmation (Yes/No/Regenerate). Returns the user's choice.
+- [x] Export these functions.
 
 ### Subtask 5: Idea Generation Integration
 **Goal:** Use the LLM Service and CLI to generate and select startup ideas.
