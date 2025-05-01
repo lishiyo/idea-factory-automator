@@ -51,7 +51,7 @@ npm start
 
 Currently, you can run the following tests and components:
 
-1. Test idea + schema generation and regeneration in cli:
+1. Test flow up to site generation in cli:
    ```
    npx run dev
    ```

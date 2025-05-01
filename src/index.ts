@@ -16,10 +16,12 @@ import { getTopic, selectIdea, getDesignPreferences } from './cli.js';
 import { callLLM, LLMOptions } from './services/llmService.js';
 import { parseIdeas } from './utils/parsers.js';
 import { generateSiteSchema } from './services/schemaService.js';
-// These imports will be uncommented as we implement each module
-// import { generateSiteFiles, SiteFiles } from './managers/siteGenerator.js';
-// import { createSiteDirectory, saveSiteFiles } from './managers/fileManager.js';
+// Uncomment these modules that we've now implemented
+import { generateSiteFiles, SiteFiles } from './managers/siteGenerator.js';
+import { createSiteDirectory, saveSiteFiles } from './managers/fileManager.js';
+// This one will be for Subtask 10
 // import { deploySite } from './managers/deploymentManager.js';
+import path from 'path';
 
 /**
  * Main application function
@@ -86,10 +88,35 @@ Make sure all 10 ideas are concise, practical, and marketable. Do not include an
     };
     
     console.log('\n✨ Success! Schema approved.');
-    console.log('Next steps will include generating HTML/CSS files and deploying to Netlify.');
     
-    // Log the data for debugging
-    console.log('\nProject data:', JSON.stringify(projectData, null, 2));
+    // Step 7: Generate HTML and CSS files
+    console.log('\n🔨 Generating landing page files...');
+    const siteFiles: SiteFiles = await generateSiteFiles(
+      schema, 
+      selectedIdea,
+      designStyle,
+      true // Enable content refinement
+    );
+    console.log('✅ HTML and CSS files generated successfully.');
+    
+    // Step 8: Save the files locally
+    console.log('\n💾 Saving files locally...');
+    // Define base output directory
+    const baseOutputDir = path.resolve(process.cwd(), 'output');
+    // Create site-specific directory based on brand name
+    const siteDirectory = await createSiteDirectory(baseOutputDir, schema.brandName);
+    // Save the HTML and CSS files
+    await saveSiteFiles(siteDirectory, siteFiles.htmlContent, siteFiles.cssContent);
+    console.log(`✅ Files saved to: ${siteDirectory}`);
+    
+    // Step 9: Deployment (will be implemented in Subtask 10)
+    console.log('\n🚀 Landing page created successfully!');
+    console.log(`📂 Your site files are available at: ${siteDirectory}`);
+    console.log('�� Deployment to Netlify will be added in a future update.');
+    
+    // Log the path to open the site locally
+    console.log(`\n👀 To view your landing page, open this file in your browser:`);
+    console.log(`📄 ${path.join(siteDirectory, 'index.html')}`);
     
   } catch (error) {
     console.error('❌ Error:', error instanceof Error ? error.message : String(error));
