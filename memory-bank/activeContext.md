@@ -1,7 +1,7 @@
 # Active Context - Idea Factory Automator
 
 ## Current Phase
-Implementation - Subtasks 2, 3, and 4 completed, ready for Subtask 5.
+Implementation - Subtask 5 completed, ready for Subtask 6.
 
 ## Project Overview
 The Idea Factory Automator is a CLI-based tool that helps users:
@@ -13,7 +13,7 @@ The Idea Factory Automator is a CLI-based tool that helps users:
 For v0, we're focusing on the automated site creation workflow.
 
 ## Technical Context
-- **Language/Platform**: Node.js with ES Modules
+- **Language/Platform**: Node.js with TypeScript and ES Modules
 - **External Services**:
   - LLM provider (via OpenRouter, targeting models like GPT-4o)
   - Netlify for deployment
@@ -24,6 +24,7 @@ For v0, we're focusing on the automated site creation workflow.
   - Axios for API requests
   - Dotenv for environment variables
   - ZX for shell command execution
+  - TSX for running TypeScript files with ESM support
 - **Required Environment Variables**:
   - OPENROUTER_API_KEY
   - NETLIFY_GIT_REPO_URL
@@ -35,30 +36,35 @@ For v0, we're focusing on the automated site creation workflow.
   ```
   idea-factory-agent/
   ├── src/
-  │   ├── index.js        # Main orchestrator
-  │   ├── cli.js          # CLI interactions
+  │   ├── index.ts        # Main orchestrator
+  │   ├── cli.ts          # CLI interactions
   │   ├── services/
-  │   │   └── llmService.js # LLM API interactions
+  │   │   └── llmService.ts # LLM API interactions
   │   ├── managers/
-  │   │   ├── siteGenerator.js    # Site generation
-  │   │   ├── fileManager.js      # File system operations
-  │   │   └── deploymentManager.js # Git operations
+  │   │   ├── siteGenerator.ts    # Site generation
+  │   │   ├── fileManager.ts      # File system operations
+  │   │   └── deploymentManager.ts # Git operations
   │   ├── templates/
   │   │   ├── index.ejs     # HTML template
   │   │   └── style.ejs     # CSS template
-  │   └── utils/            # Helper functions
+  │   └── utils/
+  │       └── parsers.ts    # Parsing utilities for LLM responses
+  ├── scripts/
+  │   └── test-components.ts # Component testing script
   ├── output/             # Generated sites (before deployment)
   ├── .env                # Environment variables (configured)
+  ├── tsconfig.json       # TypeScript configuration
   ├── package.json
   └── README.md
   ```
 - **Module Status**:
-  - index.js: Basic structure with dotenv configuration, ready for workflow implementation
-  - cli.js: Fully implemented with inquirer for all user interactions
-  - llmService.js: Fully implemented with OpenRouter API integration
-  - siteGenerator.js: Placeholder EJS rendering implementation
-  - fileManager.js: Placeholder file operations
-  - deploymentManager.js: Placeholder Git operations
+  - index.ts: Implemented for idea generation and selection workflow
+  - cli.ts: Fully implemented with inquirer for all user interactions
+  - llmService.ts: Fully implemented with OpenRouter API integration
+  - utils/parsers.ts: Implemented with robust parsing for LLM responses
+  - siteGenerator.ts: Placeholder EJS rendering implementation
+  - fileManager.ts: Placeholder file operations
+  - deploymentManager.ts: Placeholder Git operations
   - templates: Basic responsive HTML/CSS templates created
   - Environment Variables: Structure defined with placeholders
 
@@ -67,10 +73,13 @@ For v0, we're focusing on the automated site creation workflow.
 - ✅ Subtask 2: Configuration and Secrets Management
 - ✅ Subtask 3: LLM Service Implementation
 - ✅ Subtask 4: Basic CLI Interface Setup
+- ✅ Subtask 5: Idea Generation Integration
 
 ## Next Steps
-- Implement Subtask 5: Idea Generation Integration
-  - Modify index.js to use cli.js and llmService.js for generating and selecting startup ideas
-  - Add parsing logic for LLM responses to extract ideas as an array
-  - Handle potential formatting inconsistencies in LLM outputs
-- Prepare for Subtask 6: Schema Generation Integration
+- Implement Subtask 6: Schema Generation Integration
+  - Extend index.ts to get design preferences and generate site schema
+  - Develop LLM prompt for schema generation with valid JSON format
+  - Create schema parsing and validation logic
+  - Handle schema regeneration and approval flow
+  - Store approved schema for site generation
+- Prepare for Subtask 7: HTML/CSS Template Creation

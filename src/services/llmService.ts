@@ -68,7 +68,8 @@ export async function callLLM(prompt: string, options: LLMOptions = {}): Promise
         }
       ],
       temperature: options.temperature || 0.7,
-      max_tokens: options.max_tokens || 1000
+      max_tokens: options.max_tokens || 10000,
+      response_format: { type: "text" }
     };
     
     // Make the API call

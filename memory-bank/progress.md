@@ -1,5 +1,7 @@
 # Idea Factory Automator - Progress Log
 
+**CRITICAL**: Always figure out the correct date to use via `date` in terminal first!
+
 ## 2025-04-30
 - Created initial project requirements document (v0_prd.md)
 - Defined core user flow and components
@@ -59,13 +61,24 @@
   - Created scripts directory with test-components.ts for component testing
   - Updated project documentation to reference TypeScript files
 
+## 2025-05-02
+- Subtask 5 completed: Idea Generation Integration
+  - Implemented idea generation and selection workflow in index.ts
+  - Created dedicated parsers.ts utility in utils directory
+  - Implemented robust parseIdeas function to handle various LLM response formats
+  - Enhanced LLM prompt to generate structured idea lists
+  - Improved LLM service with better token limits and response format settings
+  - Fixed TypeScript ESM compatibility issues by using tsx instead of ts-node
+  - Extended error handling for LLM responses
+
 ## Upcoming Milestones
 1. ✅ Project initialization and setup (Completed)
 2. ✅ Configuration and secrets management (Completed)
 3. ✅ LLM service integration (Completed)
 4. ✅ CLI interface implementation (Completed)
-5. ⏳ Idea generation and selection (Subtask 5)
-6. Template creation and site generation
-7. File system management
-8. Deployment integration
-9. End-to-end testing
+5. ✅ Idea generation and selection (Completed)
+6. ⏳ Schema generation integration (Subtask 6)
+7. Template creation and site generation
+8. File system management
+9. Deployment integration
+10. End-to-end testing
