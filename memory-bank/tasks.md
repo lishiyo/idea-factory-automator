@@ -122,13 +122,13 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 - [x] Set up basic EJS templates: `touch src/templates/index.ejs src/templates/style.ejs`
 - [x] Create a `.gitignore` file to exclude `node_modules/`, `.env`, and `output/` directories.
 - [x] Create a basic `README.md` file with setup instructions.
-- [ ] Create a `.env.example` file with placeholders for required environment variables.
+- [x] Create a `.env.example` file with placeholders for required environment variables.
 
 ### Subtask 2: Configuration and Secrets Management
 **Goal:** Set up environment variable handling for API keys and configuration.
 **Dependencies:** Subtask 1
 **Steps:**
-- [ ] Populate `.env` file with necessary variables:
+- [x] Populate `.env` file with necessary variables:
     ```dotenv
     OPENROUTER_API_KEY=your_openrouter_api_key_here
     NETLIFY_GIT_REPO_URL=your_netlify_watched_git_repo_url_here

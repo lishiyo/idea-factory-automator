@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= brandName %></title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts for the selected font families -->
+  <link href="https://fonts.googleapis.com/css2?family=<%= font.heading.replace(/\s+/g, '+') %>&family=<%= font.body.replace(/\s+/g, '+') %>&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <h1><%= copyBlocks.headline %></h1>
+      <p class="subheadline"><%= copyBlocks.subheadline %></p>
+      <!-- Hero image description: <%= imagePrompts.hero %> -->
+      <div class="cta">
+        <a href="#signup" class="cta-button"><%= copyBlocks.callToAction %></a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <div class="feature">
+        <!-- Feature image description: <%= imagePrompts.feature1 %> -->
+        <h2><%= copyBlocks.featureTitle1 %></h2>
+        <p><%= copyBlocks.featureDescription1 %></p>
+      </div>
+      <div class="feature">
+        <!-- Feature image description: <%= imagePrompts.feature2 %> -->
+        <h2><%= copyBlocks.featureTitle2 %></h2>
+        <p><%= copyBlocks.featureDescription2 %></p>
+      </div>
+      <div class="feature">
+        <!-- Feature image description: <%= imagePrompts.feature3 %> -->
+        <h2><%= copyBlocks.featureTitle3 %></h2>
+        <p><%= copyBlocks.featureDescription3 %></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Signup Form Section -->
+  <section id="signup" class="signup">
+    <div class="container">
+      <h2><%= formText.title %></h2>
+      <form name="contact" method="POST" data-netlify="true">
+        <input type="hidden" name="form-name" value="contact">
+        <div class="form-group">
+          <input type="email" name="email" placeholder="<%= formText.emailPlaceholder %>" required>
+        </div>
+        <button type="submit"><%= formText.submitButton %></button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; <%= new Date().getFullYear() %> <%= brandName %>. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
