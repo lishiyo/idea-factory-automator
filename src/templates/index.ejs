@@ -5,53 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= brandName %></title>
   <link rel="stylesheet" href="style.css">
-  <!-- Google Fonts for the selected font families -->
-  <link href="https://fonts.googleapis.com/css2?family=<%= font.heading.replace(/\s+/g, '+') %>&family=<%= font.body.replace(/\s+/g, '+') %>&display=swap" rel="stylesheet">
+  <!-- Add Google Fonts based on schema -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=<%= font.heading.replace(' ', '+') %>&family=<%= font.body.replace(' ', '+') %>&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Hero Section -->
-  <header class="hero">
+  <header>
     <div class="container">
-      <h1><%= copyBlocks.headline %></h1>
-      <p class="subheadline"><%= copyBlocks.subheadline %></p>
-      <!-- Hero image description: <%= imagePrompts.hero %> -->
-      <div class="cta">
-        <a href="#signup" class="cta-button"><%= copyBlocks.callToAction %></a>
+      <div class="brand">
+        <h1><%= brandName %></h1>
       </div>
     </div>
   </header>
 
-  <!-- Features Section -->
-  <section class="features">
+  <section class="hero">
     <div class="container">
-      <div class="feature">
-        <!-- Feature image description: <%= imagePrompts.feature1 %> -->
-        <h2><%= copyBlocks.featureTitle1 %></h2>
-        <p><%= copyBlocks.featureDescription1 %></p>
+      <div class="hero-content">
+        <h2><%= copyBlocks.headline %></h2>
+        <p class="subheadline"><%= copyBlocks.subheadline %></p>
+        <div class="cta-container">
+          <a href="#contact" class="cta-button"><%= copyBlocks.callToAction %></a>
+        </div>
       </div>
-      <div class="feature">
-        <!-- Feature image description: <%= imagePrompts.feature2 %> -->
-        <h2><%= copyBlocks.featureTitle2 %></h2>
-        <p><%= copyBlocks.featureDescription2 %></p>
-      </div>
-      <div class="feature">
-        <!-- Feature image description: <%= imagePrompts.feature3 %> -->
-        <h2><%= copyBlocks.featureTitle3 %></h2>
-        <p><%= copyBlocks.featureDescription3 %></p>
+      <div class="hero-image">
+        <!-- In a real implementation, we would use the imagePrompts to generate images -->
+        <div class="placeholder-image" aria-label="<%= imagePrompts.hero %>">
+          <!-- Placeholder for hero image -->
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Signup Form Section -->
-  <section id="signup" class="signup">
+  <section class="features">
+    <div class="container">
+      <div class="feature">
+        <div class="feature-image">
+          <!-- In a real implementation, we would use the imagePrompts to generate images -->
+          <div class="placeholder-image" aria-label="<%= imagePrompts.feature1 %>">
+            <!-- Placeholder for feature image -->
+          </div>
+        </div>
+        <div class="feature-content">
+          <h3>Key Feature</h3>
+          <p>This is where we would highlight a key feature or benefit of the product or service.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
     <div class="container">
       <h2><%= formText.title %></h2>
-      <form name="contact" method="POST" data-netlify="true">
+      
+      <!-- Netlify Form - with required attributes -->
+      <form data-netlify="true" name="contact" method="POST">
+        <!-- Hidden input for Netlify form name -->
         <input type="hidden" name="form-name" value="contact">
+        
         <div class="form-group">
-          <input type="email" name="email" placeholder="<%= formText.emailPlaceholder %>" required>
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
         </div>
-        <button type="submit"><%= formText.submitButton %></button>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        
+        <button type="submit" class="submit-button"><%= formText.submitButton %></button>
       </form>
     </div>
   </section>
@@ -62,4 +89,4 @@
     </div>
   </footer>
 </body>
-</html>
+</html> 
