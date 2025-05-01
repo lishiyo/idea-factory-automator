@@ -112,26 +112,12 @@ Make sure all 10 ideas are concise, practical, and marketable. Do not include an
     await saveSiteFiles(siteDirectory, siteFiles.htmlContent, siteFiles.cssContent);
     console.log(`✅ Files saved to: ${siteDirectory}`);
     
-    // Handle saving images if they were generated
-    if (siteFiles.imageResults && Object.keys(siteFiles.imageResults).length > 0) {
-      try {
-        console.log('📸 Saving generated images...');
-        await saveGeneratedImages(
-          siteFiles.imageResults, 
-          baseOutputDir, 
-          schema.brandName
-        );
-        console.log('✅ Images saved successfully!');
-      } catch (imageError) {
-        console.warn('⚠️ Error saving images:', imageError instanceof Error ? imageError.message : String(imageError));
-        console.log('Continuing without images. You can still view the landing page.');
-      }
-    }
+    // Images are now saved during site generation, so we don't need to save them again here
     
     // Step 9: Deployment (will be implemented in Subtask 10)
     console.log('\n🚀 Landing page created successfully!');
     console.log(`📂 Your site files are available at: ${siteDirectory}`);
-    console.log('�� Deployment to Netlify will be added in a future update.');
+    console.log('Deployment to Netlify will be added in a future update.');
     
     // Log the path to open the site locally
     console.log(`\n👀 To view your landing page, open this file in your browser:`);

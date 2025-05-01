@@ -135,6 +135,21 @@ export async function generateSiteFiles(
       // Cast schema to LandingPageSchema since we know it has the required structure
       imageResults = await generateImagesFromSchema(schema as unknown as LandingPageSchema);
       
+      // Debug the imageResults
+      console.log('DEBUG: Raw imageResults:', Object.keys(imageResults));
+      for (const [key, result] of Object.entries(imageResults)) {
+        console.log(`DEBUG: Image result for ${key}:`, JSON.stringify({
+          success: (result as ImageGenerationResult).success,
+          hasLocalPaths: !!(result as ImageGenerationResult).localPaths,
+          localPathsLength: (result as ImageGenerationResult).localPaths?.length || 0
+        }));
+      }
+      
+      // Save images BEFORE adding paths to schema
+      const baseOutputDir = path.resolve(process.cwd(), 'output');
+      console.log('Saving generated images to disk...');
+      await saveGeneratedImages(imageResults, baseOutputDir, schema.brandName);
+      
       // Add image paths to schema for template use
       schema.generatedImages = {};
       for (const [key, result] of Object.entries(imageResults)) {
@@ -142,8 +157,18 @@ export async function generateSiteFiles(
         if (typedResult.success && typedResult.localPaths && typedResult.localPaths.length > 0) {
           // Use relative path for templates (base will be the site directory)
           schema.generatedImages[key] = `images/${path.basename(typedResult.localPaths[0])}`;
+          console.log(`DEBUG: Adding image path for ${key}: ${schema.generatedImages[key]}`);
+        } else {
+          console.log(`DEBUG: Skipping image for ${key}, conditions not met:`, {
+            success: typedResult.success,
+            hasLocalPaths: !!typedResult.localPaths,
+            pathsLength: typedResult.localPaths?.length || 0
+          });
         }
       }
+      
+      // Debug output to see what's in generatedImages
+      console.log('DEBUG: generatedImages object:', JSON.stringify(schema.generatedImages));
     } catch (imageError) {
       console.warn('Image generation skipped due to error:', (imageError as Error).message);
       console.log('Continuing with placeholder images.');
