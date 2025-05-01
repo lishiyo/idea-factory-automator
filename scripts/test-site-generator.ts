@@ -61,13 +61,19 @@ async function testSiteGenerator() {
     const testOutputDir = path.resolve(process.cwd(), 'test-output');
     await fs.mkdir(testOutputDir, { recursive: true });
     
-    // Save the files
-    await fs.writeFile(path.join(testOutputDir, 'basic-index.html'), basicSite.htmlContent);
-    await fs.writeFile(path.join(testOutputDir, 'basic-style.css'), basicSite.cssContent);
-    await fs.writeFile(path.join(testOutputDir, 'refined-index.html'), refinedSite.htmlContent);
-    await fs.writeFile(path.join(testOutputDir, 'refined-style.css'), refinedSite.cssContent);
+    // Create separate directories for each version
+    const basicDir = path.join(testOutputDir, 'basic');
+    const refinedDir = path.join(testOutputDir, 'refined');
+    await fs.mkdir(basicDir, { recursive: true });
+    await fs.mkdir(refinedDir, { recursive: true });
     
-    console.log(`Files saved to ${testOutputDir}`);
+    // Save the files with the correct names that match the HTML references
+    await fs.writeFile(path.join(basicDir, 'index.html'), basicSite.htmlContent);
+    await fs.writeFile(path.join(basicDir, 'style.css'), basicSite.cssContent);
+    await fs.writeFile(path.join(refinedDir, 'index.html'), refinedSite.htmlContent);
+    await fs.writeFile(path.join(refinedDir, 'style.css'), refinedSite.cssContent);
+    
+    console.log(`Files saved to ${testOutputDir}/basic and ${testOutputDir}/refined directories`);
     console.log('Test completed successfully!');
   } catch (error) {
     console.error('Test failed:', error);

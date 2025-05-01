@@ -8,6 +8,7 @@ package-lock.json
 # Output directories
 output/
 dist/
+test-output/
 
 # Editor directories and files
 .vscode/

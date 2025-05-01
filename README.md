@@ -39,45 +39,86 @@ A CLI tool that automates the creation of landing pages for product/startup idea
 
 ## Usage
 
-Run the CLI tool:
+### Main CLI Tool (Work in Progress)
+
+The full implementation is in progress. When completed, you'll be able to run:
 
 ```
 npm start
 ```
 
-Follow the prompts to:
-1. Enter a topic of interest
-2. Select one of the generated ideas
-3. Specify design preferences
-4. Review and approve the generated schema
-5. Wait for site generation and deployment
+### Current Working Commands
+
+Currently, you can run the following tests and components:
+
+1. Test idea + schema generation and regeneration in cli:
+   ```
+   npx run dev
+   ```
+
+2. Test site generation (HTML/CSS rendering):
+   ```
+   npx tsx scripts/test-site-generator.ts
+   ```
+   This will create sample landing pages in `test-output/basic` and `test-output/refined` directories.
 
 ## Project Structure
 
 ```
 idea-factory-automator/
 ├── src/
-│   ├── index.js        # Main orchestrator
-│   ├── cli.js          # CLI interactions
+│   ├── index.ts               # Main orchestrator
+│   ├── cli.ts                 # CLI interactions
 │   ├── services/
-│   │   └── llmService.js # LLM API interactions
+│   │   ├── llmService.ts      # LLM API interactions
+│   │   └── schemaService.ts   # Schema generation
 │   ├── managers/
-│   │   ├── siteGenerator.js    # Site generation
-│   │   ├── fileManager.js      # File system operations
-│   │   └── deploymentManager.js # Git operations
+│   │   ├── siteGenerator.ts   # Site generation with EJS
+│   │   ├── fileManager.ts     # File system operations
+│   │   └── deploymentManager.ts # Git operations
 │   ├── templates/
-│   │   ├── index.ejs     # HTML template
-│   │   └── style.ejs     # CSS template
-│   └── utils/            # Helper functions
-├── output/             # Generated sites (before deployment)
-├── .env                # Environment variables
+│   │   ├── index.ejs          # HTML template
+│   │   └── style.ejs          # CSS template
+│   └── utils/
+│       └── parsers.ts         # Helper functions for parsing responses
+├── scripts/
+│   ├── test-components.ts     # Test individual components
+│   └── test-site-generator.ts # Test site generation
+├── test-output/               # Generated sites for testing
+├── output/                    # Generated sites (before deployment)
+├── memory-bank/               # Development documentation
+├── .env                       # Environment variables
+├── tsconfig.json              # TypeScript configuration
 ├── package.json
 └── README.md
 ```
 
 ## Development
 
-More detailed development documentation can be found in the `memory-bank` directory.
+### Testing Components
+
+You can test individual components using the scripts mentioned in the Usage section. The test scripts use mock data to verify functionality.
+
+### Site Generator
+
+The site generator (`src/managers/siteGenerator.ts`) can:
+- Render HTML and CSS from EJS templates
+- Optionally refine content using the LLM
+- Handle errors gracefully
+
+The test script creates both basic and refined versions of the site for comparison.
+
+### Adding Features
+
+The project is being developed in phases according to the implementation plan in `memory-bank/tasks.md`.
+
+## Further Documentation
+
+More detailed development documentation can be found in the `memory-bank` directory:
+- `tasks.md`: Implementation tasks and progress
+- `architecture.md`: System architecture and design
+- `progress.md`: Development changelog
+- `activeContext.md`: Current development focus
 
 ## License
 
