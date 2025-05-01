@@ -251,18 +251,18 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Implement functions to create directories and save generated site files.
 **Dependencies:** Subtask 1
 **Steps:**
-- [ ] Open `src/managers/fileManager.ts`.
-- [ ] Import Node's `fs/promises` and `path`.
-- [ ] Define an async function `createSiteDirectory(baseDir, siteName)`:
-    - [ ] Construct the full path: `path.join(baseDir, siteName)`.
-    - [ ] Use `fs.mkdir(fullPath, { recursive: true })` to create the directory.
-    - [ ] Handle errors.
-    - [ ] Return the `fullPath`.
-- [ ] Define an async function `saveSiteFiles(dirPath, htmlContent, cssContent)`:
-    - [ ] Construct file paths: `path.join(dirPath, 'index.html')`, `path.join(dirPath, 'style.css')`.
-    - [ ] Use `fs.writeFile(htmlPath, htmlContent)` and `fs.writeFile(cssPath, cssContent)`.
-    - [ ] Handle errors.
-- [ ] Export `createSiteDirectory` and `saveSiteFiles`.
+- [x] Open `src/managers/fileManager.ts`.
+- [x] Import Node's `fs/promises` and `path`.
+- [x] Define an async function `createSiteDirectory(baseDir, siteName)`:
+    - [x] Construct the full path: `path.join(baseDir, siteName)`.
+    - [x] Use `fs.mkdir(fullPath, { recursive: true })` to create the directory.
+    - [x] Handle errors.
+    - [x] Return the `fullPath`.
+- [x] Define an async function `saveSiteFiles(dirPath, htmlContent, cssContent)`:
+    - [x] Construct file paths: `path.join(dirPath, 'index.html')`, `path.join(dirPath, 'style.css')`.
+    - [x] Use `fs.writeFile(htmlPath, htmlContent)` and `fs.writeFile(cssPath, cssContent)`.
+    - [x] Handle errors.
+- [x] Export `createSiteDirectory` and `saveSiteFiles`.
 
 ### Subtask 10: Deployment Manager Implementation
 **Goal:** Implement Git operations to commit and push the generated site to the Netlify-watched repository.

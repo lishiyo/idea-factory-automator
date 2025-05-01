@@ -4,7 +4,7 @@
  * This script tests the createSiteDirectory and saveSiteFiles functions
  */
 
-import { createSiteDirectory, saveSiteFiles } from '../../src/managers/fileManager.js';
+import { createSiteDirectory, saveSiteFiles } from '../src/managers/fileManager.js';
 import path from 'path';
 
 async function testFileManager() {
