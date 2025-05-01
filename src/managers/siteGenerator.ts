@@ -13,12 +13,23 @@ import path from 'path';
 // Import callLLM for content refinement
 import { callLLM } from '../services/llmService.js';
 
+// Import image generation services
+import { 
+  generateImagesFromSchema, 
+  saveGeneratedImages,
+  ImageGenerationResult 
+} from '../services/imageService.js';
+
+// Import schema type
+import { LandingPageSchema } from '../utils/parsers.js';
+
 /**
  * Interface for the site files
  */
 export interface SiteFiles {
   htmlContent: string;
   cssContent: string;
+  imageResults?: Record<string, ImageGenerationResult>;
 }
 
 /**
@@ -56,13 +67,15 @@ Return ONLY a JSON object with the same structure as the original, but with enha
  * @param {string} selectedIdea The idea selected by the user (for content refinement)
  * @param {string} designPreferences The design preferences specified by the user (for content refinement)
  * @param {boolean} enableRefinement Whether to enable content refinement (default: false)
+ * @param {boolean} generateImages Whether to generate images using AI (default: false)
  * @returns {Promise<SiteFiles>} Object containing htmlContent and cssContent strings
  */
 export async function generateSiteFiles(
   schema: Record<string, any>,
   selectedIdea?: string,
   designPreferences?: string,
-  enableRefinement: boolean = false
+  enableRefinement: boolean = false,
+  generateImages: boolean = false
 ): Promise<SiteFiles> {
   console.log('Generating site files from schema...');
   
@@ -114,6 +127,29 @@ export async function generateSiteFiles(
     }
   }
   
+  // Optional image generation
+  let imageResults: Record<string, ImageGenerationResult> = {};
+  if (generateImages) {
+    try {
+      console.log('Generating images for the landing page...');
+      // Cast schema to LandingPageSchema since we know it has the required structure
+      imageResults = await generateImagesFromSchema(schema as unknown as LandingPageSchema);
+      
+      // Add image paths to schema for template use
+      schema.generatedImages = {};
+      for (const [key, result] of Object.entries(imageResults)) {
+        const typedResult = result as ImageGenerationResult;
+        if (typedResult.success && typedResult.localPaths && typedResult.localPaths.length > 0) {
+          // Use relative path for templates (base will be the site directory)
+          schema.generatedImages[key] = `images/${path.basename(typedResult.localPaths[0])}`;
+        }
+      }
+    } catch (imageError) {
+      console.warn('Image generation skipped due to error:', (imageError as Error).message);
+      console.log('Continuing with placeholder images.');
+    }
+  }
+  
   // Generate the HTML and CSS content using EJS templates
   try {
     console.log('Rendering HTML template...');
@@ -126,7 +162,8 @@ export async function generateSiteFiles(
     
     return {
       htmlContent,
-      cssContent
+      cssContent,
+      imageResults: Object.keys(imageResults).length > 0 ? imageResults : undefined
     };
   } catch (renderError: unknown) {
     console.error('Error rendering templates:', (renderError as Error).message);

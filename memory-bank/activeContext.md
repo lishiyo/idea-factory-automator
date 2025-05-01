@@ -1,7 +1,7 @@
 # Active Context - Idea Factory Automator
 
 ## Current Phase
-Implementation - Subtask 9 completed, ready for Subtask 10.
+Implementation - Subtask 10 completed, ready for Subtask 11.
 
 ## Project Overview
 The Idea Factory Automator is a CLI-based tool that helps users:
@@ -18,6 +18,7 @@ For v0, we're focusing on the automated site creation workflow.
   - LLM provider (via OpenRouter, targeting models like GPT-4o)
   - Netlify for deployment
   - Git repository for site storage
+  - Replicate for image generation
 - **Key Libraries**:
   - Inquirer for CLI interactions
   - EJS for templating
@@ -25,10 +26,12 @@ For v0, we're focusing on the automated site creation workflow.
   - Dotenv for environment variables
   - ZX for shell command execution
   - TSX for running TypeScript files with ESM support
+  - Replicate for image generation API integration
 - **Required Environment Variables**:
   - OPENROUTER_API_KEY
   - NETLIFY_GIT_REPO_URL
   - DEFAULT_LLM_MODEL (added for flexibility)
+  - REPLICATE_API_TOKEN (for image generation)
 
 ## Current Implementation Status
 - **Project Structure**: Created and organized following architecture.md
@@ -40,6 +43,7 @@ For v0, we're focusing on the automated site creation workflow.
   │   ├── cli.ts          # CLI interactions
   │   ├── services/
   │   │   ├── llmService.ts # LLM API interactions
+  │   │   ├── imageService.ts # Image generation (Replicate API)
   │   │   └── schemaService.ts # Schema generation
   │   ├── managers/
   │   │   ├── siteGenerator.ts    # Site generation
@@ -51,7 +55,8 @@ For v0, we're focusing on the automated site creation workflow.
   │   └── utils/
   │       └── parsers.ts    # Parsing utilities for LLM responses
   ├── scripts/
-  │   └── test-components.ts # Component testing script
+  │   ├── test-components.ts # Component testing script
+  │   └── test-image-generation.ts # Image generation testing script
   |   test-output/        # Generated files from testing
   ├── output/             # Generated sites (before deployment)
   ├── .env                # Environment variables (configured)
@@ -60,17 +65,18 @@ For v0, we're focusing on the automated site creation workflow.
   └── README.md
   ```
 - **Module Status**:
-  - index.ts: Implemented for idea generation, selection, and schema generation workflow
+  - index.ts: Implemented for idea generation, selection, schema generation, and image generation workflow
   - cli.ts: Fully implemented with inquirer for all user interactions
   - llmService.ts: Fully implemented with OpenRouter API integration
   - services/schemaService.ts: Implemented with step-by-step schema generation approach
+  - services/imageService.ts: Implemented with Replicate API integration for image generation
   - utils/parsers.ts: Implemented with robust parsing for LLM responses and JSON correction
-  - siteGenerator.ts: Implemented with EJS rendering and optional content refinement
+  - siteGenerator.ts: Implemented with EJS rendering, content refinement, and image integration
   - fileManager.ts: Fully implemented with directory creation and file saving capabilities
   - deploymentManager.ts: Placeholder Git operations
   - templates: 
-    - index.ejs: Responsive HTML template with Netlify form implementation
-    - style.ejs: CSS template with dynamic styling variables
+    - index.ejs: Responsive HTML template with Netlify form implementation and image support
+    - style.ejs: CSS template with dynamic styling variables and image styling
   - Environment Variables: Structure defined with placeholders
 
 ## Completed Tasks
@@ -83,9 +89,10 @@ For v0, we're focusing on the automated site creation workflow.
 - ✅ Subtask 7: HTML/CSS Template Creation
 - ✅ Subtask 8: Site Generator Implementation
 - ✅ Subtask 9: File System Manager Implementation
+- ✅ Subtask 10: Image Integration
 
 ## Next Steps
-- Implement Subtask 10: Deployment Manager Implementation
+- Implement Subtask 11: Deployment Manager Implementation
   - Create functions to handle Git operations
   - Implement deploySite to clone repository, copy files, commit, and push
   - Add error handling for Git operations

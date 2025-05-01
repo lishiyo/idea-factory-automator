@@ -29,10 +29,14 @@
         </div>
       </div>
       <div class="hero-image">
+        <% if (locals.generatedImages && generatedImages.hero) { %>
+          <img src="<%= generatedImages.hero %>" alt="<%= imagePrompts.hero %>" class="generated-image">
+        <% } else { %>
         <!-- In a real implementation, we would use the imagePrompts to generate images -->
         <div class="placeholder-image" aria-label="<%= imagePrompts.hero %>">
           <!-- Placeholder for hero image -->
         </div>
+        <% } %>
       </div>
     </div>
   </section>
@@ -41,10 +45,14 @@
     <div class="container">
       <div class="feature main-feature">
         <div class="feature-image">
+          <% if (locals.generatedImages && generatedImages.feature1) { %>
+            <img src="<%= generatedImages.feature1 %>" alt="<%= imagePrompts.feature1 %>" class="generated-image">
+          <% } else { %>
           <!-- In a real implementation, we would use the imagePrompts to generate images -->
           <div class="placeholder-image" aria-label="<%= imagePrompts.feature1 %>">
             <!-- Placeholder for feature image -->
           </div>
+          <% } %>
         </div>
         <div class="feature-content">
           <h3>Key Feature</h3>

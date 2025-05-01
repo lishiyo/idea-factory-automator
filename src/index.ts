@@ -19,6 +19,8 @@ import { generateSiteSchema } from './services/schemaService.js';
 // Uncomment these modules that we've now implemented
 import { generateSiteFiles, SiteFiles } from './managers/siteGenerator.js';
 import { createSiteDirectory, saveSiteFiles } from './managers/fileManager.js';
+// Import image service functions
+import { saveGeneratedImages } from './services/imageService.js';
 // This one will be for Subtask 10
 // import { deploySite } from './managers/deploymentManager.js';
 import path from 'path';
@@ -95,7 +97,8 @@ Make sure all 10 ideas are concise, practical, and marketable. Do not include an
       schema, 
       selectedIdea,
       designStyle,
-      true // Enable content refinement
+      true, // Enable content refinement
+      true  // Enable image generation
     );
     console.log('✅ HTML and CSS files generated successfully.');
     
@@ -108,6 +111,22 @@ Make sure all 10 ideas are concise, practical, and marketable. Do not include an
     // Save the HTML and CSS files
     await saveSiteFiles(siteDirectory, siteFiles.htmlContent, siteFiles.cssContent);
     console.log(`✅ Files saved to: ${siteDirectory}`);
+    
+    // Handle saving images if they were generated
+    if (siteFiles.imageResults && Object.keys(siteFiles.imageResults).length > 0) {
+      try {
+        console.log('📸 Saving generated images...');
+        await saveGeneratedImages(
+          siteFiles.imageResults, 
+          baseOutputDir, 
+          schema.brandName
+        );
+        console.log('✅ Images saved successfully!');
+      } catch (imageError) {
+        console.warn('⚠️ Error saving images:', imageError instanceof Error ? imageError.message : String(imageError));
+        console.log('Continuing without images. You can still view the landing page.');
+      }
+    }
     
     // Step 9: Deployment (will be implemented in Subtask 10)
     console.log('\n🚀 Landing page created successfully!');

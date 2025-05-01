@@ -24,6 +24,7 @@
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "inquirer": "^12.6.0",
+    "replicate": "^1.0.1",
     "zx": "^8.5.3"
   },
   "devDependencies": {

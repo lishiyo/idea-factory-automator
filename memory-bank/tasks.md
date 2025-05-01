@@ -264,7 +264,10 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
     - [x] Handle errors.
 - [x] Export `createSiteDirectory` and `saveSiteFiles`.
 
-### Subtask 10: Deployment Manager Implementation
+### Subtask 10: Image integration
+- [x] See [./image-generation-plan.md](./image-generation-plan.md) for detailed steps.
+
+### Subtask 11: Deployment Manager Implementation
 **Goal:** Implement Git operations to commit and push the generated site to the Netlify-watched repository.
 **Dependencies:** Subtask 1, Subtask 2 (needs repo URL)
 **Steps:**
