@@ -5,15 +5,36 @@
  * Manages API requests, response parsing, and error handling.
  */
 
-import axios from 'axios';
+import axios, { AxiosResponse, AxiosError } from 'axios';
+
+/**
+ * Interface for LLM API options
+ */
+export interface LLMOptions {
+  model?: string;
+  temperature?: number;
+  max_tokens?: number;
+  [key: string]: any;
+}
+
+/**
+ * Interface for OpenRouter API response
+ */
+interface OpenRouterResponse {
+  choices: {
+    message: {
+      content: string;
+    };
+  }[];
+}
 
 /**
  * Call the LLM API with a prompt
  * @param {string} prompt The text prompt to send to the LLM
- * @param {Object} options Optional parameters like model, temperature, etc.
+ * @param {LLMOptions} options Optional parameters like model, temperature, etc.
  * @returns {Promise<string>} The LLM response text
  */
-export async function callLLM(prompt, options = {}) {
+export async function callLLM(prompt: string, options: LLMOptions = {}): Promise<string> {
   try {
     // Get API key from environment variables
     const apiKey = process.env.OPENROUTER_API_KEY;
@@ -51,7 +72,11 @@ export async function callLLM(prompt, options = {}) {
     };
     
     // Make the API call
-    const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', body, { headers });
+    const response: AxiosResponse<OpenRouterResponse> = await axios.post(
+      'https://openrouter.ai/api/v1/chat/completions', 
+      body, 
+      { headers }
+    );
     
     // Extract and return the response text
     const responseText = response.data.choices[0].message.content;
@@ -61,19 +86,21 @@ export async function callLLM(prompt, options = {}) {
     // Enhanced error handling
     console.error('❌ LLM API Error:');
     
-    if (error.response) {
+    const axiosError = error as AxiosError;
+    
+    if (axiosError.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      console.error(`Status: ${error.response.status}`);
-      console.error(`Data: ${JSON.stringify(error.response.data)}`);
-    } else if (error.request) {
+      console.error(`Status: ${axiosError.response.status}`);
+      console.error(`Data: ${JSON.stringify(axiosError.response.data)}`);
+    } else if (axiosError.request) {
       // The request was made but no response was received
       console.error('No response received from LLM API');
     } else {
       // Something happened in setting up the request that triggered an Error
-      console.error(`Error message: ${error.message}`);
+      console.error(`Error message: ${axiosError.message}`);
     }
     
-    throw new Error(`Failed to get response from LLM: ${error.message}`);
+    throw new Error(`Failed to get response from LLM: ${error instanceof Error ? error.message : String(error)}`);
   }
-}
+} 

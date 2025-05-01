@@ -11,13 +11,13 @@ import inquirer from 'inquirer';
  * Prompts the user to enter a topic of interest
  * @returns {Promise<string>} The entered topic
  */
-export async function getTopic() {
-  const { topic } = await inquirer.prompt([
+export async function getTopic(): Promise<string> {
+  const { topic } = await inquirer.prompt<{ topic: string }>([
     {
       type: 'input',
       name: 'topic',
       message: '🔍 What topic are you interested in for startup ideas?',
-      validate: (input) => {
+      validate: (input: string) => {
         if (input.trim() === '') {
           return 'Please enter a topic';
         }
@@ -34,14 +34,14 @@ export async function getTopic() {
  * @param {string[]} ideas Array of idea strings to choose from
  * @returns {Promise<string>} The selected idea
  */
-export async function selectIdea(ideas) {
+export async function selectIdea(ideas: string[]): Promise<string> {
   if (!Array.isArray(ideas) || ideas.length === 0) {
     throw new Error('No ideas provided to select from');
   }
   
   console.log('\n✨ Here are some startup ideas based on your topic:');
   
-  const { selectedIdea } = await inquirer.prompt([
+  const { selectedIdea } = await inquirer.prompt<{ selectedIdea: string }>([
     {
       type: 'list',
       name: 'selectedIdea',
@@ -61,7 +61,7 @@ export async function selectIdea(ideas) {
  * Prompts the user for design style preferences
  * @returns {Promise<string>} The selected design style
  */
-export async function getDesignPreferences() {
+export async function getDesignPreferences(): Promise<string> {
   const designStyles = [
     'Modern & Minimal',
     'Bold & Vibrant',
@@ -71,7 +71,7 @@ export async function getDesignPreferences() {
     'Tech & Digital'
   ];
   
-  const { designStyle } = await inquirer.prompt([
+  const { designStyle } = await inquirer.prompt<{ designStyle: string }>([
     {
       type: 'list',
       name: 'designStyle',
@@ -85,16 +85,21 @@ export async function getDesignPreferences() {
 }
 
 /**
+ * Type definition for schema confirmation action
+ */
+export type SchemaAction = 'approve' | 'regenerate' | 'cancel';
+
+/**
  * Shows the generated schema and asks for confirmation
  * @param {Object} schema The generated schema object
- * @returns {Promise<string>} User choice: 'approve', 'regenerate', or 'cancel'
+ * @returns {Promise<SchemaAction>} User choice: 'approve', 'regenerate', or 'cancel'
  */
-export async function confirmSchema(schema) {
+export async function confirmSchema(schema: Record<string, any>): Promise<SchemaAction> {
   // Pretty print the schema for readability
   console.log('\n📋 Generated Site Schema:');
   console.log(JSON.stringify(schema, null, 2));
   
-  const { action } = await inquirer.prompt([
+  const { action } = await inquirer.prompt<{ action: SchemaAction }>([
     {
       type: 'list',
       name: 'action',
@@ -108,4 +113,4 @@ export async function confirmSchema(schema) {
   ]);
   
   return action;
-}
+} 

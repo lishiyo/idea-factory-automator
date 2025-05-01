@@ -12,17 +12,17 @@
  */
 
 import 'dotenv/config';
-import { getTopic, selectIdea, getDesignPreferences, confirmSchema } from './cli.js';
+import { getTopic, selectIdea, getDesignPreferences, confirmSchema, SchemaAction } from './cli.js';
 // These imports will be uncommented as we implement each module
-import { callLLM } from './services/llmService.js';
-// import { generateSiteFiles } from './managers/siteGenerator.js';
-// import { createSiteDirectory, saveSiteFiles } from './managers/fileManager.js';
-// import { deploySite } from './managers/deploymentManager.js';
+import { callLLM, LLMOptions } from './services/llmService.js';
+import { generateSiteFiles, SiteFiles } from './managers/siteGenerator.js';
+import { createSiteDirectory, saveSiteFiles } from './managers/fileManager.js';
+import { deploySite } from './managers/deploymentManager.js';
 
 /**
  * Main application function
  */
-async function run() {
+async function run(): Promise<void> {
   try {
     console.log('🚀 Welcome to Idea Factory Automator!');
     console.log('-------------------------------------');
@@ -31,10 +31,10 @@ async function run() {
     console.log('This is a placeholder. Implementation coming soon!');
     
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('❌ Error:', error instanceof Error ? error.message : String(error));
     process.exit(1);
   }
 }
 
 // Execute main function
-run();
+run(); 

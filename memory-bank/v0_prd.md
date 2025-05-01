@@ -16,7 +16,7 @@ For v0 we will focus on the automated site creation piece. The user flow looks l
 
 ## Tech Stack
 
-- Node.js
+- Node.js and Typescript
 - OpenAI (or another LLM like Gemini) - use Openrouter
 - Netlify for deployment
 - Netlify forms for email forms

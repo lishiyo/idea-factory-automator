@@ -9,7 +9,7 @@
  * 3. Calling the LLM with the prompt
  * 4. Displaying the response
  * 
- * Run with: node scripts/test-components.js
+ * Run with: npm run test-components
  */
 
 import 'dotenv/config';
@@ -19,7 +19,7 @@ import { callLLM } from '../src/services/llmService.js';
 /**
  * Main test function
  */
-async function testComponents() {
+async function testComponents(): Promise<void> {
   try {
     console.log('🚀 Idea Factory Automator - Component Test');
     console.log('------------------------------------------');
@@ -45,8 +45,8 @@ async function testComponents() {
     console.log('\n🎉 All components are working correctly!');
     
   } catch (error) {
-    console.error('❌ Test failed:', error.message);
-    if (error.message.includes('API key')) {
+    console.error('❌ Test failed:', error instanceof Error ? error.message : String(error));
+    if (error instanceof Error && error.message.includes('API key')) {
       console.error('🔑 Make sure you have set up your .env file with OPENROUTER_API_KEY');
     }
     process.exit(1);

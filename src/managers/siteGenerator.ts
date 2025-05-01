@@ -13,11 +13,19 @@ import { readFile } from 'fs/promises';
 // import { callLLM } from '../services/llmService.js';
 
 /**
+ * Interface for the site files
+ */
+export interface SiteFiles {
+  htmlContent: string;
+  cssContent: string;
+}
+
+/**
  * Generates site files (HTML and CSS) based on the provided schema
  * @param {Object} schema The approved schema object containing all site content and styling
- * @returns {Promise<Object>} Object containing htmlContent and cssContent strings
+ * @returns {Promise<SiteFiles>} Object containing htmlContent and cssContent strings
  */
-export async function generateSiteFiles(schema) {
+export async function generateSiteFiles(schema: Record<string, any>): Promise<SiteFiles> {
   // Placeholder implementation
   console.log('generateSiteFiles: To be implemented in Subtask 8');
   console.log('Would use schema to render templates');
@@ -42,4 +50,4 @@ export async function generateSiteFiles(schema) {
 }
 /* Placeholder for complete rendered CSS */`
   };
-}
+} 

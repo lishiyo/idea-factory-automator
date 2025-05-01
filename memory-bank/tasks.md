@@ -37,22 +37,22 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 ## 2. Component Analysis
 
 **Affected Components (from `architecture.md`):**
-- **`src/index.js` (Orchestrator):**
+- **`src/index.ts` (Orchestrator):**
     - *Changes needed:* Implement main control flow, coordinate all other modules, handle state (topic, selected idea, approved schema), manage error handling.
-    - *Dependencies:* `cli.js`, `llmService.js`, `siteGenerator.js`, `fileManager.js`, `deploymentManager.js`, `dotenv`.
-- **`src/cli.js`:**
+    - *Dependencies:* `cli.ts`, `llmService.ts`, `siteGenerator.ts`, `fileManager.ts`, `deploymentManager.ts`, `dotenv`.
+- **`src/cli.ts`:**
     - *Changes needed:* Implement functions for `getTopic`, `selectIdea`, `getDesignPreferences`, `confirmSchema` using `inquirer`.
     - *Dependencies:* `inquirer`.
-- **`src/services/llmService.js`:**
+- **`src/services/llmService.ts`:**
     - *Changes needed:* Implement `callLLM` function to interact with OpenRouter API, handle authentication, request/response formatting, basic error handling.
     - *Dependencies:* `axios`, `dotenv`.
-- **`src/managers/siteGenerator.js`:**
+- **`src/managers/siteGenerator.ts`:**
     - *Changes needed:* Implement `generateSiteFiles` using `ejs` to render templates with schema data. Optionally include LLM call for content refinement.
-    - *Dependencies:* `ejs`, `fs/promises`, potentially `llmService.js`.
-- **`src/managers/fileManager.js`:**
+    - *Dependencies:* `ejs`, `fs/promises`, potentially `llmService.ts`.
+- **`src/managers/fileManager.ts`:**
     - *Changes needed:* Implement `createSiteDirectory` and `saveSiteFiles` using `fs/promises` and `path`.
     - *Dependencies:* `fs/promises`, `path`.
-- **`src/managers/deploymentManager.js`:**
+- **`src/managers/deploymentManager.ts`:**
     - *Changes needed:* Implement `deploySite` using `zx` to perform Git clone, copy, add, commit, push operations. Handle temporary directories and cleanup.
     - *Dependencies:* `zx`, `fs/promises`, `dotenv`, `path`.
 - **`src/templates/index.ejs`, `src/templates/style.ejs`:**
@@ -62,10 +62,13 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
     - *Changes needed:* Define `OPENROUTER_API_KEY` and `NETLIFY_GIT_REPO_URL`.
     - *Dependencies:* None.
 - **`.gitignore`:**
-    - *Changes needed:* Include `node_modules/`, `.env`, `output/`.
+    - *Changes needed:* Include `node_modules/`, `.env`, `output/`, `dist/`.
     - *Dependencies:* None.
 - **`package.json`:**
-    - *Changes needed:* Set `"type": "module"`, list dependencies (`axios`, `inquirer`, `ejs`, `dotenv`, `zx`).
+    - *Changes needed:* Set `"type": "module"`, list dependencies (`axios`, `inquirer`, `ejs`, `dotenv`, `zx`) and dev dependencies (`typescript`, `ts-node`, types).
+    - *Dependencies:* None.
+- **`tsconfig.json`:**
+    - *Changes needed:* Configure TypeScript options for ES modules.
     - *Dependencies:* None.
 
 ---
@@ -115,12 +118,17 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
     - [x] `ejs`: As the templating engine for HTML/CSS generation.
     - [x] `dotenv`: For managing environment variables (API keys, repo URL).
     - [x] `zx`: For easily running shell commands (like Git).
-- [x] Create basic directory structure: `mkdir src src/services src/managers src/templates src/utils`
-- [x] Create placeholder files: `touch src/index.js src/cli.js`
-- [x] Create placeholder service files: `touch src/services/llmService.js`
-- [x] Create placeholder manager files: `touch src/managers/siteGenerator.js src/managers/fileManager.js src/managers/deploymentManager.js`
+- [x] Install TypeScript and related dev dependencies:
+    ```bash
+    npm install --save-dev typescript ts-node @types/node @types/inquirer @types/ejs
+    ```
+- [x] Create basic directory structure: `mkdir src src/services src/managers src/templates src/utils scripts`
+- [x] Create placeholder files: `touch src/index.ts src/cli.ts`
+- [x] Create placeholder service files: `touch src/services/llmService.ts`
+- [x] Create placeholder manager files: `touch src/managers/siteGenerator.ts src/managers/fileManager.ts src/managers/deploymentManager.ts`
 - [x] Set up basic EJS templates: `touch src/templates/index.ejs src/templates/style.ejs`
-- [x] Create a `.gitignore` file to exclude `node_modules/`, `.env`, and `output/` directories.
+- [x] Create TypeScript configuration: `touch tsconfig.json`
+- [x] Create a `.gitignore` file to exclude `node_modules/`, `.env`, `output/`, and `dist/` directories.
 - [x] Create a basic `README.md` file with setup instructions.
 - [x] Create a `.env.example` file with placeholders for required environment variables.
 
@@ -132,9 +140,10 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
     ```dotenv
     OPENROUTER_API_KEY=your_openrouter_api_key_here
     NETLIFY_GIT_REPO_URL=your_netlify_watched_git_repo_url_here
+    DEFAULT_LLM_MODEL=your_default_model_here
     ```
-- [x] In `src/index.js` (or a dedicated config module if preferred), import and configure `dotenv`:
-    ```javascript
+- [x] In `src/index.ts` (or a dedicated config module if preferred), import and configure `dotenv`:
+    ```typescript
     import 'dotenv/config';
     // Access variables like process.env.OPENROUTER_API_KEY
     ```
@@ -143,9 +152,10 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Create a reusable service to interact with the OpenRouter API.
 **Dependencies:** Subtask 1, Subtask 2
 **Steps:**
-- [x] Open `src/services/llmService.js`.
-- [x] Import `axios`.
-- [x] Define an async function `callLLM(prompt, options = {})`.
+- [x] Open `src/services/llmService.ts`.
+- [x] Import `axios` and TypeScript types.
+- [x] Define interfaces for LLMOptions and API responses.
+- [x] Define an async function `callLLM(prompt: string, options: LLMOptions = {})`.
 - [x] Inside the function:
     - [x] Retrieve API key from `process.env.OPENROUTER_API_KEY`.
     - [x] Set up request headers (Authorization).
@@ -154,28 +164,29 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
     - [x] Handle potential errors (network issues, API errors) gracefully (e.g., try/catch).
     - [x] Parse the response to extract the relevant text/JSON content.
     - [x] Return the parsed content.
-- [x] Export the `callLLM` function.
+- [x] Export the `callLLM` function and related interfaces.
 
 ### Subtask 4: Basic CLI Interface Setup
 **Goal:** Implement the core user interaction flow using `inquirer`.
 **Dependencies:** Subtask 1
 **Steps:**
-- [x] Open `src/cli.js`.
-- [x] Import `inquirer`.
+- [x] Open `src/cli.ts`.
+- [x] Import `inquirer` and required type definitions.
 - [x] Create async functions for each user interaction point:
-    - [x] `getTopic()`: Prompts user for the initial topic string. Returns the topic.
-    - [x] `selectIdea(ideas)`: Takes a list of idea strings, presents them as a choice list. Returns the selected idea string.
-    - [x] `getDesignPreferences()`: Asks user for design style (e.g., "modern", "playful", "minimalist"). Returns the preference string.
-    - [x] `confirmSchema(schema)`: Takes the generated schema (as a JS object), pretty-prints it (e.g., `JSON.stringify(schema, null, 2)`), and asks for confirmation (Yes/No/Regenerate). Returns the user's choice.
+    - [x] `getTopic(): Promise<string>`: Prompts user for the initial topic string. Returns the topic.
+    - [x] `selectIdea(ideas: string[]): Promise<string>`: Takes a list of idea strings, presents them as a choice list. Returns the selected idea string.
+    - [x] `getDesignPreferences(): Promise<string>`: Asks user for design style (e.g., "modern", "playful", "minimalist"). Returns the preference string.
+    - [x] `confirmSchema(schema: Record<string, any>): Promise<SchemaAction>`: Takes the generated schema (as a JS object), pretty-prints it (e.g., `JSON.stringify(schema, null, 2)`), and asks for confirmation (Yes/No/Regenerate). Returns the user's choice.
+- [x] Define and export the SchemaAction type for return values.
 - [x] Export these functions.
 
 ### Subtask 5: Idea Generation Integration
 **Goal:** Use the LLM Service and CLI to generate and select startup ideas.
 **Dependencies:** Subtask 3, Subtask 4
 **Steps:**
-- [ ] Modify `src/index.js` (Orchestrator).
-- [ ] Import `getTopic`, `selectIdea` from `cli.js`.
-- [ ] Import `callLLM` from `llmService.js`.
+- [ ] Modify `src/index.ts` (Orchestrator).
+- [ ] Import `getTopic`, `selectIdea` from `cli.ts`.
+- [ ] Import `callLLM` from `llmService.ts`.
 - [ ] In the main execution flow:
     - [ ] Call `getTopic()` to get the user's topic.
     - [ ] Construct a prompt for the LLM asking for 10 startup ideas based on the topic.
@@ -188,8 +199,8 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Use the LLM Service and CLI to generate and approve the site schema.
 **Dependencies:** Subtask 3, Subtask 4, Subtask 5 (needs selected idea)
 **Steps:**
-- [ ] Modify `src/index.js`.
-- [ ] Import `getDesignPreferences`, `confirmSchema` from `cli.js`.
+- [ ] Modify `src/index.ts`.
+- [ ] Import `getDesignPreferences`, `confirmSchema` from `cli.ts`.
 - [ ] In the main execution flow (after idea selection):
     - [ ] Call `getDesignPreferences()` to get user style.
     - [ ] Define the target JSON structure for the schema (e.g., `{ brandName: string, palette: { primary: string, secondary: string, accent: string }, font: { heading: string, body: string }, copyBlocks: { headline: string, subheadline: string, callToAction: string }, imagePrompts: { hero: string, feature1: string }, formText: { title: string, submitButton: string } }`).
@@ -225,9 +236,9 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Implement the logic to populate templates with schema data and LLM-generated content.
 **Dependencies:** Subtask 3 (optional content refinement), Subtask 6 (needs schema), Subtask 7 (needs templates)
 **Steps:**
-- [ ] Open `src/managers/siteGenerator.js`.
+- [ ] Open `src/managers/siteGenerator.ts`.
 - [ ] Import `ejs` and Node's `fs/promises`.
-- [ ] Import `callLLM` from `llmService.js` (optional: if refining copy).
+- [ ] Import `callLLM` from `llmService.ts` (optional: if refining copy).
 - [ ] Define an async function `generateSiteFiles(schema)`:
     - [ ] **(Optional)** If desired, construct prompts for `callLLM` to refine/expand `schema.copyBlocks` or generate image alt text based on `schema.imagePrompts`. Update the schema object with refined content. **(Creative Phase: Content Refinement Logic - Optional)**
     - [ ] Define paths to the template files (`src/templates/index.ejs`, `src/templates/style.ejs`).
@@ -240,7 +251,7 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Implement functions to create directories and save generated site files.
 **Dependencies:** Subtask 1
 **Steps:**
-- [ ] Open `src/managers/fileManager.js`.
+- [ ] Open `src/managers/fileManager.ts`.
 - [ ] Import Node's `fs/promises` and `path`.
 - [ ] Define an async function `createSiteDirectory(baseDir, siteName)`:
     - [ ] Construct the full path: `path.join(baseDir, siteName)`.
@@ -257,7 +268,7 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Implement Git operations to commit and push the generated site to the Netlify-watched repository.
 **Dependencies:** Subtask 1, Subtask 2 (needs repo URL)
 **Steps:**
-- [ ] Open `src/managers/deploymentManager.js`.
+- [ ] Open `src/managers/deploymentManager.ts`.
 - [ ] Import `$` and `cd` from `zx`: `import { $, cd } from 'zx'`. Ensure `zx` script is executable or run node with `--experimental-vm-modules`. Configure `$.verbose = false` if desired.
 - [ ] Import Node's `fs/promises` for cleanup.
 - [ ] Define an async function `deploySite(siteSourcePath, siteName)`:
@@ -283,31 +294,31 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Tie all the components together in the main script to execute the full workflow.
 **Dependencies:** Subtask 5, Subtask 6, Subtask 8, Subtask 9, Subtask 10
 **Steps:**
-- [ ] Open `src/index.js`.
-- [ ] Import all necessary functions from `cli.js`, `llmService.js`, `siteGenerator.js`, `fileManager.js`, `deploymentManager.js`.
+- [ ] Open `src/index.ts`.
+- [ ] Import all necessary functions from `cli.ts`, `llmService.ts`, `siteGenerator.ts`, `fileManager.ts`, `deploymentManager.ts`.
 - [ ] Define a main `async` function `run()`:
     - [ ] Call functions in the sequence defined by the PRD's Implementation Plan (Steps 1-12).
-    - [ ] Get topic (`cli.js`).
-    - [ ] Generate & select idea (using `llmService.js`, `cli.js`).
-    - [ ] Get preferences (`cli.js`).
-    - [ ] Generate & approve schema (loop using `llmService.js`, `cli.js`). Store `approvedSchema`.
-    - [ ] Generate site files using `siteGenerator.js` -> `generateSiteFiles(approvedSchema)`. Store `fileContents`.
+    - [ ] Get topic (`cli.ts`).
+    - [ ] Generate & select idea (using `llmService.ts`, `cli.ts`).
+    - [ ] Get preferences (`cli.ts`).
+    - [ ] Generate & approve schema (loop using `llmService.ts`, `cli.ts`). Store `approvedSchema`.
+    - [ ] Generate site files using `siteGenerator.ts` -> `generateSiteFiles(approvedSchema)`. Store `fileContents`.
     - [ ] Define base output directory (e.g., `./output`).
-    - [ ] Create site directory using `fileManager.js` -> `createSiteDirectory(baseOutputDir, approvedSchema.brandName)`. Store `sitePath`. (Use a sanitized version of brandName for directory name).
-    - [ ] Save site files using `fileManager.js` -> `saveSiteFiles(sitePath, fileContents.htmlContent, fileContents.cssContent)`.
-    - [ ] Deploy site using `deploymentManager.js` -> `deploySite(sitePath, approvedSchema.brandName)`.
+    - [ ] Create site directory using `fileManager.ts` -> `createSiteDirectory(baseOutputDir, approvedSchema.brandName)`. Store `sitePath`. (Use a sanitized version of brandName for directory name).
+    - [ ] Save site files using `fileManager.ts` -> `saveSiteFiles(sitePath, fileContents.htmlContent, fileContents.cssContent)`.
+    - [ ] Deploy site using `deploymentManager.ts` -> `deploySite(sitePath, approvedSchema.brandName)`.
     - [ ] Add logging/feedback to the console at each major step.
     - [ ] Include top-level error handling.
 - [ ] Call `run()` at the end of the script.
-- [ ] Make `src/index.js` executable or run via `node src/index.js`.
+- [ ] Make `src/index.ts` executable or run via `node src/index.ts`.
 
 ---
 
 ## 5. Dependencies (Between Phases/Subtasks)
 
 - Phase 1 must be complete before starting Phase 2, 3, or 4.
-- `llmService.js` (Phase 1) needed for Idea/Schema generation (Phase 2) and optional Content Refinement (Phase 3).
-- `cli.js` (Phase 1) needed for Idea/Schema generation (Phase 2).
+- `llmService.ts` (Phase 1) needed for Idea/Schema generation (Phase 2) and optional Content Refinement (Phase 3).
+- `cli.ts` (Phase 1) needed for Idea/Schema generation (Phase 2).
 - Schema Approval (Phase 2) needed before Site Generation (Phase 3).
 - Templates (Phase 2) needed before Site Generation (Phase 3).
 - Site Generation & Saving (Phase 3) needed before Deployment (Phase 4).
@@ -320,24 +331,24 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 - **Challenge:** LLM producing invalid JSON for schema.
     - **Mitigation:**
         - Engineer prompt to strongly request valid JSON output only.
-        - Implement retry logic in `index.js` if `JSON.parse` fails.
+        - Implement retry logic in `index.ts` if `JSON.parse` fails.
         - Add robust error handling around parsing.
         - Consider basic validation of the parsed object structure.
 - **Challenge:** LLM API errors or rate limits.
     - **Mitigation:**
-        - Implement error handling in `llmService.js` (catch `axios` errors).
+        - Implement error handling in `llmService.ts` (catch `axios` errors).
         - Provide informative messages to the user via CLI.
         - Consider adding delays or backoff for retries (more advanced).
 - **Challenge:** `zx` failing due to Git errors (authentication, conflicts, etc.).
     - **Mitigation:**
         - Ensure user has correctly configured Git credentials accessible by the shell environment running the script.
-        - Wrap `zx` calls in `try/catch` in `deploymentManager.js`.
+        - Wrap `zx` calls in `try/catch` in `deploymentManager.ts`.
         - Log `stdout`/`stderr` from `zx` on failure for debugging.
         - Keep Git operations simple (clone fresh, copy over, commit, push). Avoid complex merges.
 - **Challenge:** File system permission errors.
     - **Mitigation:**
         - Run the script with appropriate user permissions.
-        - Add `try/catch` around `fs` operations in `fileManager.js`.
+        - Add `try/catch` around `fs` operations in `fileManager.ts`.
 - **Challenge:** Sanitizing brand names for directory/URLs/commits.
     - **Mitigation:** Implement a utility function to replace spaces and special characters.
 - **Challenge:** Ensuring Netlify form integration works correctly.
@@ -348,11 +359,11 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 ## 7. Creative Phase Components
 
 - [ ] 🎨 **Algorithm Design / Prompt Engineering:** (Required)
-    - Designing the prompt for `llmService.js` to reliably generate the site schema (JSON) based on user input (topic, idea, preferences). (Subtask 6)
-    - Designing the optional prompt(s) for refining copy content within `siteGenerator.js`. (Subtask 8)
+    - Designing the prompt for `llmService.ts` to reliably generate the site schema (JSON) based on user input (topic, idea, preferences). (Subtask 6)
+    - Designing the optional prompt(s) for refining copy content within `siteGenerator.ts`. (Subtask 8)
 - [ ] 🏗️ **Architecture Design:** (Not Required - Defined in `architecture.md`)
 - [ ] ⚙️ **UI/UX Design (CLI):** (Minimal Required - Covered in Plan)
-    - Designing the flow and specific prompts within `cli.js` using `inquirer`.
+    - Designing the flow and specific prompts within `cli.ts` using `inquirer`.
 
 ---
 
@@ -360,11 +371,11 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 
 - **Unit Tests:** (Consider for complex logic)
     - Test utility functions (e.g., name sanitization).
-    - Mock `axios` and test `llmService.js` request formatting/error handling.
-    - Mock `fs` and test `fileManager.js` path logic.
-    - Mock `zx` and test `deploymentManager.js` command sequence/cleanup logic.
+    - Mock `axios` and test `llmService.ts` request formatting/error handling.
+    - Mock `fs` and test `fileManager.ts` path logic.
+    - Mock `zx` and test `deploymentManager.ts` command sequence/cleanup logic.
 - **Integration Tests:**
-    - Test `index.js` orchestrator flow by mocking external calls (`llmService`, `deploymentManager`).
+    - Test `index.ts` orchestrator flow by mocking external calls (`llmService`, `deploymentManager`).
 - **End-to-End Tests:**
     - Run the full CLI application with sample inputs.
     - Use a test LLM API key (if available) or carefully manage real API calls.
@@ -376,7 +387,7 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 ## 9. Documentation Plan
 
 - [ ] Update `README.md` with setup instructions, environment variable requirements, and usage guide.
-- [ ] Add JSDoc comments to exported functions in each module (`cli.js`, `llmService.js`, etc.) explaining purpose, parameters, and return values.
+- [ ] Add JSDoc comments to exported functions in each module (`cli.ts`, `llmService.ts`, etc.) explaining purpose, parameters, and return values.
 - [ ] Keep `v0_prd.md` and `architecture.md` updated if significant deviations occur (though try to adhere to the plan).
 - [ ] Maintain `tasks.md` (this file) with progress tracking.
 - [ ] Maintain `activeContext.md` and `progress.md`.
