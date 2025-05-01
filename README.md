@@ -83,18 +83,18 @@ npm start
 
 Currently, you can run the following tests and components:
 
-1. Test flow up to site generation in cli:
+1. Test flow up to site generation with images in cli:
    ```
    npx run dev
    ```
 
-2. Test site generation (HTML/CSS rendering):
+2. Test only site generation (HTML/CSS rendering):
    ```
    npx tsx scripts/test-site-generator.ts
    ```
    This will create sample landing pages in `test-output/basic` and `test-output/refined` directories.
 
-3. Test image generation with Replicate:
+3. Test only image generation with Replicate:
    ```
    npx tsx scripts/test-image-generation.ts
    ```

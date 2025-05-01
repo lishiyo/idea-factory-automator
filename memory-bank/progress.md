@@ -174,6 +174,18 @@
   - Enhanced error handling for unsupported models
   - Added model-specific optimizations for hero vs. feature images
 
+## 2025-05-01
+- Fixed image integration display issues
+  - Modified template conditional checks in index.ejs to correctly display generated images
+  - Updated siteGenerator.ts to save images to disk during site generation
+  - Fixed issue where localPaths weren't being set before template rendering
+  - Removed duplicate image saving code in index.ts to avoid redundancy
+  - Improved debug logging to better trace image generation workflow
+  - Fixed template conditional checks to work without relying on locals property
+  - Ensured correct relative paths for images in generated HTML
+  - Implemented sequential workflow: generate images → save to disk → update schema → render templates
+  - Verified images now correctly appear in generated landing pages
+
 ## Upcoming Milestones
 1. ✅ Project initialization and setup (Completed)
 2. ✅ Configuration and secrets management (Completed)
