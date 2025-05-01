@@ -1,7 +1,7 @@
 # Active Context - Idea Factory Automator
 
 ## Current Phase
-Implementation - Subtask 5 completed, ready for Subtask 6.
+Implementation - Subtask 6 completed, ready for Subtask 7.
 
 ## Project Overview
 The Idea Factory Automator is a CLI-based tool that helps users:
@@ -39,7 +39,8 @@ For v0, we're focusing on the automated site creation workflow.
   │   ├── index.ts        # Main orchestrator
   │   ├── cli.ts          # CLI interactions
   │   ├── services/
-  │   │   └── llmService.ts # LLM API interactions
+  │   │   ├── llmService.ts # LLM API interactions
+  │   │   └── schemaService.ts # Schema generation
   │   ├── managers/
   │   │   ├── siteGenerator.ts    # Site generation
   │   │   ├── fileManager.ts      # File system operations
@@ -58,10 +59,11 @@ For v0, we're focusing on the automated site creation workflow.
   └── README.md
   ```
 - **Module Status**:
-  - index.ts: Implemented for idea generation and selection workflow
+  - index.ts: Implemented for idea generation, selection, and schema generation workflow
   - cli.ts: Fully implemented with inquirer for all user interactions
   - llmService.ts: Fully implemented with OpenRouter API integration
-  - utils/parsers.ts: Implemented with robust parsing for LLM responses
+  - services/schemaService.ts: Implemented with step-by-step schema generation approach
+  - utils/parsers.ts: Implemented with robust parsing for LLM responses and JSON correction
   - siteGenerator.ts: Placeholder EJS rendering implementation
   - fileManager.ts: Placeholder file operations
   - deploymentManager.ts: Placeholder Git operations
@@ -74,12 +76,12 @@ For v0, we're focusing on the automated site creation workflow.
 - ✅ Subtask 3: LLM Service Implementation
 - ✅ Subtask 4: Basic CLI Interface Setup
 - ✅ Subtask 5: Idea Generation Integration
+- ✅ Subtask 6: Schema Generation Integration
 
 ## Next Steps
-- Implement Subtask 6: Schema Generation Integration
-  - Extend index.ts to get design preferences and generate site schema
-  - Develop LLM prompt for schema generation with valid JSON format
-  - Create schema parsing and validation logic
-  - Handle schema regeneration and approval flow
-  - Store approved schema for site generation
-- Prepare for Subtask 7: HTML/CSS Template Creation
+- Implement Subtask 7: HTML/CSS Template Creation
+  - Create responsive HTML template with proper Netlify form integration
+  - Develop matching CSS with dynamic styling based on schema
+  - Set up EJS placeholders for dynamic content
+  - Ensure form includes necessary Netlify attributes
+- Prepare for Subtask 8: Site Generator Implementation

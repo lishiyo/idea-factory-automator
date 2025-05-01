@@ -199,17 +199,17 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Use the LLM Service and CLI to generate and approve the site schema.
 **Dependencies:** Subtask 3, Subtask 4, Subtask 5 (needs selected idea)
 **Steps:**
-- [ ] Modify `src/index.ts`.
-- [ ] Import `getDesignPreferences`, `confirmSchema` from `cli.ts`.
-- [ ] In the main execution flow (after idea selection):
-    - [ ] Call `getDesignPreferences()` to get user style.
-    - [ ] Define the target JSON structure for the schema (e.g., `{ brandName: string, palette: { primary: string, secondary: string, accent: string }, font: { heading: string, body: string }, copyBlocks: { headline: string, subheadline: string, callToAction: string }, imagePrompts: { hero: string, feature1: string }, formText: { title: string, submitButton: string } }`).
-    - [ ] Loop for schema generation/approval:
-        - [ ] Construct a detailed prompt for the LLM asking it to generate the schema in the defined JSON format, based on the `selectedIdea` and `designPreferences`. Instruct it to ONLY output valid JSON. **(Creative Phase: Prompt Engineering)**
-        - [ ] Call `callLLM(prompt)` to get the schema JSON string.
-        - [ ] Attempt to `JSON.parse()` the string. Handle parsing errors (maybe retry LLM call).
-        - [ ] If parsing succeeds, call `confirmSchema(parsedSchema)`.
-        - [ ] If user approves, exit loop and store the `approvedSchema`. If user wants to regenerate, continue loop. If user cancels, exit script.
+- [x] Modify `src/index.ts`.
+- [x] Import `getDesignPreferences`, `confirmSchema` from `cli.ts`.
+- [x] In the main execution flow (after idea selection):
+    - [x] Call `getDesignPreferences()` to get user style.
+    - [x] Define the target JSON structure for the schema (e.g., `{ brandName: string, palette: { primary: string, secondary: string, accent: string }, font: { heading: string, body: string }, copyBlocks: { headline: string, subheadline: string, callToAction: string }, imagePrompts: { hero: string, feature1: string }, formText: { title: string, submitButton: string } }`).
+    - [x] Loop for schema generation/approval:
+        - [x] Construct a detailed prompt for the LLM asking it to generate the schema in the defined JSON format, based on the `selectedIdea` and `designPreferences`. Instruct it to ONLY output valid JSON. **(Creative Phase: Prompt Engineering)**
+        - [x] Call `callLLM(prompt)` to get the schema JSON string.
+        - [x] Attempt to `JSON.parse()` the string. Handle parsing errors (maybe retry LLM call).
+        - [x] If parsing succeeds, call `confirmSchema(parsedSchema)`.
+        - [x] If user approves, exit loop and store the `approvedSchema`. If user wants to regenerate, continue loop. If user cancels, exit script.
 
 ### Subtask 7: HTML/CSS Template Creation
 **Goal:** Create the static EJS template files with placeholders.
@@ -390,7 +390,7 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 - [ ] Add JSDoc comments to exported functions in each module (`cli.ts`, `llmService.ts`, etc.) explaining purpose, parameters, and return values.
 - [ ] Keep `v0_prd.md` and `architecture.md` updated if significant deviations occur (though try to adhere to the plan).
 - [ ] Maintain `tasks.md` (this file) with progress tracking.
-- [ ] Maintain `activeContext.md` and `progress.md`.
+- [ ] Maintain `activeContext.md` and `progress.md` (always use `date` in terminal for proper date).
 
 ---
 

@@ -12,9 +12,10 @@
  */
 
 import 'dotenv/config';
-import { getTopic, selectIdea, getDesignPreferences, confirmSchema, SchemaAction } from './cli.js';
+import { getTopic, selectIdea, getDesignPreferences } from './cli.js';
 import { callLLM, LLMOptions } from './services/llmService.js';
 import { parseIdeas } from './utils/parsers.js';
+import { generateSiteSchema } from './services/schemaService.js';
 // These imports will be uncommented as we implement each module
 // import { generateSiteFiles, SiteFiles } from './managers/siteGenerator.js';
 // import { createSiteDirectory, saveSiteFiles } from './managers/fileManager.js';
@@ -68,17 +69,27 @@ Make sure all 10 ideas are concise, practical, and marketable. Do not include an
     const selectedIdea = await selectIdea(ideas);
     console.log(`🎯 Selected idea: "${selectedIdea}"`);
     
-    console.log('\n✨ Success! Idea selected.');
-    console.log('Next steps will include getting design preferences and generating a landing page schema.');
+    // Step 5: Get design preferences
+    const designStyle = await getDesignPreferences();
+    console.log(`🎨 Design style selected: "${designStyle}"`);
     
-    // Store the topic and selected idea in an object to pass to the next steps
+    // Step 6: Generate and approve site schema
+    console.log('\n📋 Now we\'ll generate a schema for your landing page...');
+    const schema = await generateSiteSchema(selectedIdea, designStyle);
+    
+    // Store the complete project data
     const projectData = {
       topic,
       selectedIdea,
+      designStyle,
+      schema
     };
     
+    console.log('\n✨ Success! Schema approved.');
+    console.log('Next steps will include generating HTML/CSS files and deploying to Netlify.');
+    
     // Log the data for debugging
-    console.log('\nProject data:', projectData);
+    console.log('\nProject data:', JSON.stringify(projectData, null, 2));
     
   } catch (error) {
     console.error('❌ Error:', error instanceof Error ? error.message : String(error));

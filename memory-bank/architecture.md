@@ -32,6 +32,7 @@ idea-factory-automator/
 │   ├── cli.ts          # Handles all CLI interactions (inquirer prompts)
 │   ├── services/
 │   │   └── llmService.ts # Interacts with the LLM API (e.g., OpenRouter)
+│   │   └── schemaService.ts # Generates schema
 │   ├── managers/
 │   │   ├── siteGenerator.ts    # Generates site files from schema + templates
 │   │   ├── fileManager.ts      # Handles file system operations (create dir, save files)
@@ -40,6 +41,7 @@ idea-factory-automator/
 │   │   ├── index.ejs     # HTML template
 │   │   └── style.ejs     # CSS template (or style.css)
 │   └── utils/            # Optional: Small helper functions (e.g., sanitization, error handling)
+│   │   └── parser.js     # Parsers for LLM content
 ├── scripts/
 │   └── test-components.ts # Test script for components
 ├── dist/                # Compiled JavaScript output - added to .gitignore
