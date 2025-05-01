@@ -236,16 +236,16 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 **Goal:** Implement the logic to populate templates with schema data and LLM-generated content.
 **Dependencies:** Subtask 3 (optional content refinement), Subtask 6 (needs schema), Subtask 7 (needs templates)
 **Steps:**
-- [ ] Open `src/managers/siteGenerator.ts`.
-- [ ] Import `ejs` and Node's `fs/promises`.
-- [ ] Import `callLLM` from `llmService.ts` (optional: if refining copy).
-- [ ] Define an async function `generateSiteFiles(schema)`:
-    - [ ] See [creative-content-refinement-prompt](./creative-content-refinement-prompt.md) for chosen prompt - use this prompt with `callLLM` to refine/expand `schema.copyBlocks` or generate image alt text based on `schema.imagePrompts`. Update the schema object with refined content. **(Creative Phase: Content Refinement Logic)**
-    - [ ] Define paths to the template files (`src/templates/index.ejs`, `src/templates/style.ejs`).
-    - [ ] Use `ejs.renderFile(templatePath, schema)` for both index and style templates, passing the `schema` object as data. This will replace the `<%= ... %>` placeholders.
-    - [ ] Handle potential rendering errors.
-    - [ ] Return an object `{ htmlContent: renderedHtml, cssContent: renderedCss }`.
-- [ ] Export `generateSiteFiles`.
+- [x] Open `src/managers/siteGenerator.ts`.
+- [x] Import `ejs` and Node's `fs/promises`.
+- [x] Import `callLLM` from `llmService.ts` (optional: if refining copy).
+- [x] Define an async function `generateSiteFiles(schema)`:
+    - [x] See [creative-content-refinement-prompt](./creative-content-refinement-prompt.md) for chosen prompt - use this prompt with `callLLM` to refine/expand `schema.copyBlocks` or generate image alt text based on `schema.imagePrompts`. Update the schema object with refined content. **(Creative Phase: Content Refinement Logic)**
+    - [x] Define paths to the template files (`src/templates/index.ejs`, `src/templates/style.ejs`).
+    - [x] Use `ejs.renderFile(templatePath, schema)` for both index and style templates, passing the `schema` object as data. This will replace the `<%= ... %>` placeholders.
+    - [x] Handle potential rendering errors.
+    - [x] Return an object `{ htmlContent: renderedHtml, cssContent: renderedCss }`.
+- [x] Export `generateSiteFiles`.
 
 ### Subtask 9: File System Manager Implementation
 **Goal:** Implement functions to create directories and save generated site files.

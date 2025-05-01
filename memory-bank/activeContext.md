@@ -1,7 +1,7 @@
 # Active Context - Idea Factory Automator
 
 ## Current Phase
-Implementation - Subtask 7 completed, ready for Subtask 8.
+Implementation - Subtask 8 completed, ready for Subtask 9.
 
 ## Project Overview
 The Idea Factory Automator is a CLI-based tool that helps users:
@@ -64,7 +64,7 @@ For v0, we're focusing on the automated site creation workflow.
   - llmService.ts: Fully implemented with OpenRouter API integration
   - services/schemaService.ts: Implemented with step-by-step schema generation approach
   - utils/parsers.ts: Implemented with robust parsing for LLM responses and JSON correction
-  - siteGenerator.ts: Placeholder EJS rendering implementation
+  - siteGenerator.ts: Implemented with EJS rendering and optional content refinement
   - fileManager.ts: Placeholder file operations
   - deploymentManager.ts: Placeholder Git operations
   - templates: 
@@ -80,12 +80,13 @@ For v0, we're focusing on the automated site creation workflow.
 - ✅ Subtask 5: Idea Generation Integration
 - ✅ Subtask 6: Schema Generation Integration
 - ✅ Subtask 7: HTML/CSS Template Creation
+- ✅ Subtask 8: Site Generator Implementation
 
 ## Next Steps
-- Implement Subtask 8: Site Generator Implementation
-  - Create generateSiteFiles function in siteGenerator.ts
-  - Use EJS to render templates with schema data
-  - Integrate with llmService for optional content refinement
-  - Handle template rendering errors
-  - Return generated HTML and CSS content
-- Prepare for Subtask 9: File System Manager Implementation
+- Implement Subtask 9: File System Manager Implementation
+  - Create functions to handle file system operations
+  - Implement createSiteDirectory to create output directories
+  - Implement saveSiteFiles to write generated HTML/CSS to files
+  - Add error handling for file system operations
+  - Use path.join for cross-platform path construction
+- Prepare for Subtask 10: Deployment Manager Implementation
