@@ -39,7 +39,7 @@
 
   <section class="features">
     <div class="container">
-      <div class="feature">
+      <div class="feature main-feature">
         <div class="feature-image">
           <!-- In a real implementation, we would use the imagePrompts to generate images -->
           <div class="placeholder-image" aria-label="<%= imagePrompts.feature1 %>">
@@ -48,9 +48,20 @@
         </div>
         <div class="feature-content">
           <h3>Key Feature</h3>
-          <p>This is where we would highlight a key feature or benefit of the product or service.</p>
+          <p><%= copyBlocks.valueProposition %></p>
         </div>
       </div>
+
+      <% if (copyBlocks.featuresList && copyBlocks.featuresList.length > 0) { %>
+      <div class="features-list">
+        <h3>Features</h3>
+        <ul>
+          <% copyBlocks.featuresList.forEach(function(feature) { %>
+            <li><%= feature %></li>
+          <% }); %>
+        </ul>
+      </div>
+      <% } %>
     </div>
   </section>
 

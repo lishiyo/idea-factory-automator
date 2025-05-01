@@ -144,6 +144,38 @@ header {
   min-width: 300px;
 }
 
+/* Features list styles */
+.features-list {
+  margin-top: 2rem;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.features-list h3 {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.features-list ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.features-list li {
+  margin-bottom: 0.8rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.features-list li::before {
+  content: "✓";
+  color: var(--accent-color);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
 /* Contact section with form */
 .contact {
   padding: 4rem 0;
