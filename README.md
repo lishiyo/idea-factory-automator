@@ -11,6 +11,15 @@ CLI tool that can:
 - Generate a responsive landing page with a Netlify form for collecting emails
 - Deploy the site to Netlify using the Netlify API
 
+### v0 Screenshots
+
+![idea gen](assets/cli.jpg)
+
+cats | nutrition | events
+--- | --- | ---
+![a subscription box of puzzle treats for cats](assets/puzzlepaws.png) | ![craft trips based on your favorite books](assets/littrips.png) | ![ai event insights](assets/ignitesight.png)  
+
+
 ## Upcoming
 
 - Deploy multiple sites at once
