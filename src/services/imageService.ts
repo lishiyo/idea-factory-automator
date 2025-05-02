@@ -346,13 +346,15 @@ export async function generateImagesFromSchema(
  * @param imageResults - Record of image generation results
  * @param outputDir - Base output directory
  * @param siteName - Name of the site (for directory naming)
+ * @returns The updated imageResults with localPaths as relative paths for the template
  */
 export async function saveGeneratedImages(
   imageResults: Record<string, ImageGenerationResult>,
   outputDir: string,
   siteName: string
-): Promise<void> {
-  const siteImagesDir = path.join(outputDir, siteName.toLowerCase().replace(/[^a-z0-9]/g, '-'), 'images');
+): Promise<Record<string, ImageGenerationResult>> {
+  const siteDirName = siteName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+  const siteImagesDir = path.join(outputDir, siteDirName, 'images');
   
   // Create the images directory
   await mkdir(siteImagesDir, { recursive: true });
@@ -387,4 +389,6 @@ export async function saveGeneratedImages(
       }
     }
   }
+  
+  return imageResults;
 } 

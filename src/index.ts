@@ -20,7 +20,7 @@ import { generateSiteSchema } from './services/schemaService.js';
 import { generateSiteFiles, SiteFiles } from './managers/siteGenerator.js';
 import { createSiteDirectory, saveSiteFiles } from './managers/fileManager.js';
 // Import image service functions
-import { saveGeneratedImages } from './services/imageService.js';
+import { saveGeneratedImages, generateImagesFromSchema } from './services/imageService.js';
 // Import the deployment manager
 import { deploySite } from './managers/deploymentManager.js';
 import path from 'path';
@@ -93,12 +93,12 @@ Make sure all 10 ideas are concise, practical, and marketable. Do not include an
     
     // Step 7: Generate HTML and CSS files
     console.log('\n🔨 Generating landing page files...');
-    const siteFiles: SiteFiles = await generateSiteFiles(
+    const siteFiles = await generateSiteFiles(
       schema, 
-      selectedIdea,
-      designStyle,
-      true, // Enable content refinement
-      true  // Enable image generation
+      true, // Enable content refinement 
+      { callLLM }, // Pass llmService
+      true,  // Enable image generation
+      { generateImagesFromSchema, saveGeneratedImages } // Pass imageService
     );
     console.log('✅ HTML and CSS files generated successfully.');
     
@@ -109,7 +109,11 @@ Make sure all 10 ideas are concise, practical, and marketable. Do not include an
     // Create site-specific directory based on brand name
     const siteDirectory = await createSiteDirectory(baseOutputDir, schema.brandName);
     // Save the HTML and CSS files
-    await saveSiteFiles(siteDirectory, siteFiles.htmlContent, siteFiles.cssContent);
+    await saveSiteFiles(siteDirectory, {
+      html: siteFiles.html,
+      css: siteFiles.css,
+      successPage: siteFiles.successPage
+    });
     console.log(`✅ Files saved to: ${siteDirectory}`);
     
     // Images are now saved during site generation, so we don't need to save them again here

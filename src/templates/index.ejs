@@ -78,8 +78,13 @@
       <h2><%= formText.title %></h2>
       
       <!-- Netlify Form - with required attributes -->
-      <form data-netlify="true" name="contact" method="POST">
-        <!-- Hidden input for Netlify form name -->
+      <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/success">
+        <!-- Honeypot field for spam prevention -->
+        <div style="display: none;">
+          <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+        </div>
+        
+        <!-- Hidden input for form name - this is crucial for Netlify form detection -->
         <input type="hidden" name="form-name" value="contact">
         
         <div class="form-group">
