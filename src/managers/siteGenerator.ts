@@ -24,9 +24,6 @@ import {
 // Import schema type
 import { LandingPageSchema as SiteSchema } from '../utils/parsers.js';
 
-// Import LLM service type
-import { LLMService } from '../services/llmService.js';
-
 // Define interfaces
 interface GeneratedImages {
   urls?: Record<string, string>;
@@ -41,9 +38,8 @@ interface LLMService {
  * Interface for the site files
  */
 export interface SiteFiles {
-  htmlContent: string;
-  cssContent: string;
-  imageResults?: Record<string, ImageGenerationResult>;
+  html: string;
+  css: string;
   successPage: string;
   generatedImages?: GeneratedImages;
 }
@@ -92,8 +88,8 @@ async function refineContent(schema: SiteSchema, llmService: LLMService): Promis
     You are a professional copywriter. Please refine the following website content to be more engaging,
     persuasive, and aligned with the brand voice. The brand is "${schema.brandName}" with the following
     characteristics:
-    - Industry/Product: ${schema.industry || "Technology"}
-    - Design style: ${schema.designStyle || "Modern"}
+    - Industry/Product: ${(schema as any).industry || "Technology"}
+    - Design style: ${(schema as any).designStyle || "Modern"}
     
     Current content:
     - Headline: "${schema.copyBlocks.headline}"
@@ -236,8 +232,36 @@ export async function generateSiteFiles(
   if (imageGeneration && imageService) {
     try {
       console.log('🖼️ Generating images for landing page...');
-      generatedImages = await imageService.generateImagesFromSchema(refinedSchema);
-      console.log('✅ Successfully generated all requested images');
+      const imageResults = await imageService.generateImagesFromSchema(refinedSchema);
+      
+      // Save images to disk
+      console.log('💾 Saving generated images...');
+      const baseOutputDir = path.resolve(process.cwd(), 'output');
+      const sanitizedSiteName = refinedSchema.brandName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const updatedResults = await imageService.saveGeneratedImages(
+        imageResults, 
+        baseOutputDir, 
+        refinedSchema.brandName
+      );
+      
+      // Update schema with image paths for template rendering
+      generatedImages = { localPaths: {} };
+      
+      for (const [key, result] of Object.entries(updatedResults)) {
+        const typedResult = result as ImageGenerationResult;
+        if (typedResult.success && typedResult.localPaths && typedResult.localPaths.length > 0) {
+          // Use relative path for template - image path needs to be relative to the site directory
+          if (generatedImages.localPaths) {
+            // Convert absolute path to relative path for the template
+            // e.g., "/path/to/output/sitename/images/hero.png" -> "images/hero.png"
+            const filename = path.basename(typedResult.localPaths[0]);
+            generatedImages.localPaths[key] = `images/${filename}`;
+            console.log(`✅ Added image path for ${key}: ${generatedImages.localPaths[key]}`);
+          }
+        }
+      }
+      
+      console.log('✅ Successfully processed all images');
     } catch (error) {
       console.error('⚠️ Error generating images:', error);
       console.log('Continuing with site generation without images...');
@@ -253,7 +277,7 @@ export async function generateSiteFiles(
   try {
     const html = await ejs.renderFile(htmlTemplatePath, {
       ...refinedSchema,
-      generatedImages: generatedImages ? generatedImages.localPaths : undefined
+      generatedImages: generatedImages && generatedImages.localPaths ? generatedImages.localPaths : undefined
     });
     
     const css = await ejs.renderFile(cssTemplatePath, refinedSchema);
