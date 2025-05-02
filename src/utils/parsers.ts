@@ -12,7 +12,7 @@
  */
 export function parseIdeas(responseText: string): string[] {
   // Log the raw response for debugging
-  console.log('\nRaw LLM response:', responseText);
+//   console.log('\nRaw LLM response:', responseText);
   
   // Extract ideas from the response
   const ideas: string[] = [];

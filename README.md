@@ -1,14 +1,23 @@
-# Idea Factory Automator
+# Idea Factory Automator (v0)
 
-A CLI tool that automates the creation of landing pages for product/startup ideas, from ideation to deployment.
+Automate the creation of landing pages for product/startup ideas, from ideation to deployment. Don't know what to build? Use this tool to generate hundreds of product ideas and launch a unique site for every idea to gather quick user interest. It's fast experimentation at scale.
 
 ## Features
 
+CLI tool that can:
 - Generate startup ideas based on a user-provided topic
 - Create a schema with brand elements, copy, and design specifications
 - Generate AI-powered images for your landing page using Replicate
 - Generate a responsive landing page with a Netlify form for collecting emails
 - Deploy the site to Netlify using the Netlify API
+
+## Upcoming
+
+- Deploy multiple sites at once
+- Frontend interface to chat with the agent and refine ideas and designs
+- Much better UX designs, astro templates
+- Trend research agent to inform idea generation
+- Marketing agent to handle marketing, ad copy, and SEO
 
 ## How It Works
 
@@ -63,27 +72,19 @@ A CLI tool that automates the creation of landing pages for product/startup idea
    OPENROUTER_API_KEY=your_openrouter_api_key_here
    DEFAULT_LLM_MODEL=google/gemini-2.5-pro-preview-03-25
    REPLICATE_API_TOKEN=your_replicate_api_token_here
-   OPENAI_API_KEY=your_openai_api_key_here
-   REPLICATE_MODEL=openai/gpt-image-1
+   OPENAI_API_KEY=your_openai_api_key_here 
+   REPLICATE_MODEL=openai/gpt-image-1 # or `black-forest-labs/flux-schnell`
    NETLIFY_AUTH_TOKEN=your_netlify_auth_token_here
    NETLIFY_SITE_ID=optional_existing_site_id
    ```
 
 ## Usage
 
-### Main CLI Tool (Work in Progress)
+### Main CLI Tool (v0)
 
-The full implementation is in progress. When completed, you'll be able to run:
+v0 uses a CLI tool for interaction. You can run the following tests and components:
 
-```
-npm start
-```
-
-### Current Working Commands
-
-Currently, you can run the following tests and components:
-
-1. Test full flow to deployment:
+1. Test full flow from topic -> idea generation -> site creation -> deployment:
    ```
    npm run dev
    ```
