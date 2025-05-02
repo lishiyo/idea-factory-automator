@@ -16,11 +16,11 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 - [x] User selects one idea via CLI.
 - [x] Agent collects basic design preferences via CLI.
 - [ ] Agent generates a site schema (JSON) using LLM based on idea and preferences.
-- [ ] User approves or requests regeneration of the schema via CLI.
-- [ ] Agent generates `index.html` and `style.css` content using EJS templates and the approved schema.
-- [ ] Generated content includes a functional Netlify form (`data-netlify="true"`).
-- [ ] Agent saves generated files to a local directory named after the site/brand.
-- [ ] Agent clones a specified Git repository, copies the generated site files into it (under a subdirectory named after the site/brand), commits, and pushes.
+- [x] User approves or requests regeneration of the schema via CLI.
+- [x] Agent generates `index.html` and `style.css` content using EJS templates and the approved schema.
+- [x] Generated content includes a functional Netlify form (`data-netlify="true"`).
+- [x] Agent saves generated files to a local directory named after the site/brand.
+- [x] Agent deploys to Netlify, auto-creating the site if necessary.
 
 **Technical Constraints:**
 - [x] Must use Node.js with ES Modules.
@@ -412,8 +412,8 @@ This document outlines the comprehensive plan for implementing the v0 Idea Facto
 - [x] Detailed Steps Defined (Subtasks Integrated)?
 - [x] Dependencies Mapped?
 - [x] Challenges & Mitigations Identified?
-- [ ] Creative Phase Components Flagged?
-- [ ] Documentation Plan Included?
+- [x] Creative Phase Components Flagged?
+- [x] Documentation Plan Included?
 
 ---
 
